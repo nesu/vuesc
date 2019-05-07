@@ -1,0 +1,289 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>15.0</VCProjectVersion>
+    <ProjectGuid>{A8036B74-CA4D-453F-9AA7-F7E850C95B78}</ProjectGuid>
+    <RootNamespace>compiler</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0.17763.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>llvm</PlatformToolset>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>llvm</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>llvm</PlatformToolset>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>llvm</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+    <Import Project="..\configuration\win_flex_bison\win_flex_bison_custom_build.props" />
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup />
+  <PropertyGroup Label="LLVM" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClangClAdditionalOptions>/EHsc /GR- -D_LARGEFILE_SOURCE -D_FILE_OFFSET_BITS=64 -D_CRT_SECURE_NO_DEPRECATE -D_CRT_SECURE_NO_WARNINGS -D_CRT_NONSTDC_NO_DEPRECATE -D_CRT_NONSTDC_NO_WARNINGS -D_SCL_SECURE_NO_DEPRECATE -D_SCL_SECURE_NO_WARNINGS -DUNICODE -D_UNICODE -D__STDC_CONSTANT_MACROS -D__STDC_FORMAT_MACROS -D__STDC_LIMIT_MACROS</ClangClAdditionalOptions>
+    <UseLldLink>true</UseLldLink>
+    <LldLinkAdditionalOptions>
+    </LldLinkAdditionalOptions>
+  </PropertyGroup>
+  <PropertyGroup Label="LLVM" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClangClAdditionalOptions>/EHsc /GR- -D_LARGEFILE_SOURCE -D_FILE_OFFSET_BITS=64 -D_CRT_SECURE_NO_DEPRECATE -D_CRT_SECURE_NO_WARNINGS -D_CRT_NONSTDC_NO_DEPRECATE -D_CRT_NONSTDC_NO_WARNINGS -D_SCL_SECURE_NO_DEPRECATE -D_SCL_SECURE_NO_WARNINGS -DUNICODE -D_UNICODE -D__STDC_CONSTANT_MACROS -D__STDC_FORMAT_MACROS -D__STDC_LIMIT_MACROS</ClangClAdditionalOptions>
+    <UseLldLink>true</UseLldLink>
+    <LldLinkAdditionalOptions>
+    </LldLinkAdditionalOptions>
+  </PropertyGroup>
+  <PropertyGroup Label="LLVM" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClangClAdditionalOptions>/EHsc /GR- -D_LARGEFILE_SOURCE -D_FILE_OFFSET_BITS=64 -D_CRT_SECURE_NO_DEPRECATE -D_CRT_SECURE_NO_WARNINGS -D_CRT_NONSTDC_NO_DEPRECATE -D_CRT_NONSTDC_NO_WARNINGS -D_SCL_SECURE_NO_DEPRECATE -D_SCL_SECURE_NO_WARNINGS -DUNICODE -D_UNICODE -D__STDC_CONSTANT_MACROS -D__STDC_FORMAT_MACROS -D__STDC_LIMIT_MACROS</ClangClAdditionalOptions>
+    <UseLldLink>true</UseLldLink>
+    <LldLinkAdditionalOptions>
+    </LldLinkAdditionalOptions>
+  </PropertyGroup>
+  <PropertyGroup Label="LLVM" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClangClAdditionalOptions>/EHsc /GR- -D_LARGEFILE_SOURCE -D_FILE_OFFSET_BITS=64 -D_CRT_SECURE_NO_DEPRECATE -D_CRT_SECURE_NO_WARNINGS -D_CRT_NONSTDC_NO_DEPRECATE -D_CRT_NONSTDC_NO_WARNINGS -D_SCL_SECURE_NO_DEPRECATE -D_SCL_SECURE_NO_WARNINGS -DUNICODE -D_UNICODE -D__STDC_CONSTANT_MACROS -D__STDC_FORMAT_MACROS -D__STDC_LIMIT_MACROS</ClangClAdditionalOptions>
+    <UseLldLink>true</UseLldLink>
+    <LldLinkAdditionalOptions>
+    </LldLinkAdditionalOptions>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <SDLCheck>true</SDLCheck>
+      <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>$(VUES_ROOT)\winflexbison;$(VUES_ROOT)\include;$(VUES_ROOT)\llvm\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <AdditionalLibraryDirectories>$(VUES_ROOT)\llvm\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>LLVMLineEditor.lib;LLVMMIRParser.lib;LLVMDlltoolDriver.lib;LLVMLTO.lib;LLVMPasses.lib;LLVMObjCARCOpts.lib;LLVMObjectYAML.lib;LLVMCoverage.lib;LLVMXCoreDisassembler.lib;LLVMXCoreCodeGen.lib;LLVMXCoreDesc.lib;LLVMXCoreInfo.lib;LLVMXCoreAsmPrinter.lib;LLVMWebAssemblyDisassembler.lib;LLVMWebAssemblyCodeGen.lib;LLVMWebAssemblyDesc.lib;LLVMWebAssemblyAsmPrinter.lib;LLVMWebAssemblyAsmParser.lib;LLVMWebAssemblyInfo.lib;LLVMSystemZDisassembler.lib;LLVMSystemZCodeGen.lib;LLVMSystemZAsmParser.lib;LLVMSystemZDesc.lib;LLVMSystemZInfo.lib;LLVMSystemZAsmPrinter.lib;LLVMSparcDisassembler.lib;LLVMSparcCodeGen.lib;LLVMSparcAsmParser.lib;LLVMSparcDesc.lib;LLVMSparcInfo.lib;LLVMSparcAsmPrinter.lib;LLVMPowerPCDisassembler.lib;LLVMPowerPCCodeGen.lib;LLVMPowerPCAsmParser.lib;LLVMPowerPCDesc.lib;LLVMPowerPCInfo.lib;LLVMPowerPCAsmPrinter.lib;LLVMNVPTXCodeGen.lib;LLVMNVPTXDesc.lib;LLVMNVPTXInfo.lib;LLVMNVPTXAsmPrinter.lib;LLVMMSP430Disassembler.lib;LLVMMSP430CodeGen.lib;LLVMMSP430AsmParser.lib;LLVMMSP430Desc.lib;LLVMMSP430Info.lib;LLVMMSP430AsmPrinter.lib;LLVMMipsDisassembler.lib;LLVMMipsCodeGen.lib;LLVMMipsAsmParser.lib;LLVMMipsDesc.lib;LLVMMipsInfo.lib;LLVMMipsAsmPrinter.lib;LLVMLanaiDisassembler.lib;LLVMLanaiCodeGen.lib;LLVMLanaiAsmParser.lib;LLVMLanaiDesc.lib;LLVMLanaiAsmPrinter.lib;LLVMLanaiInfo.lib;LLVMHexagonDisassembler.lib;LLVMHexagonCodeGen.lib;LLVMHexagonAsmParser.lib;LLVMHexagonDesc.lib;LLVMHexagonInfo.lib;LLVMBPFDisassembler.lib;LLVMBPFCodeGen.lib;LLVMBPFAsmParser.lib;LLVMBPFDesc.lib;LLVMBPFInfo.lib;LLVMBPFAsmPrinter.lib;LLVMARMDisassembler.lib;LLVMARMCodeGen.lib;LLVMARMAsmParser.lib;LLVMARMDesc.lib;LLVMARMInfo.lib;LLVMARMAsmPrinter.lib;LLVMARMUtils.lib;LLVMAMDGPUDisassembler.lib;LLVMAMDGPUCodeGen.lib;LLVMAMDGPUAsmParser.lib;LLVMAMDGPUDesc.lib;LLVMAMDGPUInfo.lib;LLVMAMDGPUAsmPrinter.lib;LLVMAMDGPUUtils.lib;LLVMAArch64Disassembler.lib;LLVMAArch64CodeGen.lib;LLVMAArch64AsmParser.lib;LLVMAArch64Desc.lib;LLVMAArch64Info.lib;LLVMAArch64AsmPrinter.lib;LLVMAArch64Utils.lib;LLVMXRay.lib;LLVMTableGen.lib;LLVMLibDriver.lib;LLVMOption.lib;LLVMWindowsManifest.lib;LLVMOptRemarks.lib;LLVMSymbolize.lib;LLVMDebugInfoPDB.lib;LLVMDebugInfoDWARF.lib;LLVMX86Disassembler.lib;LLVMX86AsmParser.lib;LLVMX86CodeGen.lib;LLVMGlobalISel.lib;LLVMSelectionDAG.lib;LLVMAsmPrinter.lib;LLVMX86Desc.lib;LLVMMCDisassembler.lib;LLVMX86Info.lib;LLVMX86AsmPrinter.lib;LLVMX86Utils.lib;LLVMMCJIT.lib;LLVMInterpreter.lib;LLVMCodeGen.lib;LLVMOrcJIT.lib;LLVMExecutionEngine.lib;LLVMRuntimeDyld.lib;LLVMFuzzMutate.lib;LLVMTarget.lib;LLVMCoroutines.lib;LLVMipo.lib;LLVMInstrumentation.lib;LLVMVectorize.lib;LLVMScalarOpts.lib;LLVMLinker.lib;LLVMIRReader.lib;LLVMAsmParser.lib;LLVMInstCombine.lib;LLVMBitWriter.lib;LLVMAggressiveInstCombine.lib;LLVMTransformUtils.lib;LLVMAnalysis.lib;LLVMProfileData.lib;LLVMObject.lib;LLVMMCParser.lib;LLVMBitReader.lib;LLVMCore.lib;LLVMTextAPI.lib;LLVMMCA.lib;LLVMMC.lib;LLVMDebugInfoCodeView.lib;LLVMDebugInfoMSF.lib;LLVMBinaryFormat.lib;LLVMSupport.lib;LLVMDemangle.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+    <Bison>
+      <OutputFile>%(Filename).cc</OutputFile>
+      <DefinesFile>%(Filename).h</DefinesFile>
+      <Debug>true</Debug>
+      <Verbose>true</Verbose>
+      <GraphFile>parser;%(GraphFile)</GraphFile>
+    </Bison>
+    <Flex>
+      <OutputFile>%(Filename).lex.cc</OutputFile>
+      <Cpp>true</Cpp>
+      <HeaderFile>
+      </HeaderFile>
+      <CppClassName>
+      </CppClassName>
+      <Debug>true</Debug>
+    </Flex>
+    <PostBuildEvent>
+      <Command>
+      </Command>
+    </PostBuildEvent>
+    <PostBuildEvent>
+      <Message>
+      </Message>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <SDLCheck>true</SDLCheck>
+      <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>$(VUES_ROOT)\winflexbison;$(VUES_ROOT)\include;$(VUES_ROOT)\llvm\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <BrowseInformation>true</BrowseInformation>
+    </ClCompile>
+    <Link>
+      <AdditionalLibraryDirectories>$(VUES_ROOT)\llvm\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>LLVMLineEditor.lib;LLVMMIRParser.lib;LLVMDlltoolDriver.lib;LLVMLTO.lib;LLVMPasses.lib;LLVMObjCARCOpts.lib;LLVMObjectYAML.lib;LLVMCoverage.lib;LLVMXCoreDisassembler.lib;LLVMXCoreCodeGen.lib;LLVMXCoreDesc.lib;LLVMXCoreInfo.lib;LLVMXCoreAsmPrinter.lib;LLVMWebAssemblyDisassembler.lib;LLVMWebAssemblyCodeGen.lib;LLVMWebAssemblyDesc.lib;LLVMWebAssemblyAsmPrinter.lib;LLVMWebAssemblyAsmParser.lib;LLVMWebAssemblyInfo.lib;LLVMSystemZDisassembler.lib;LLVMSystemZCodeGen.lib;LLVMSystemZAsmParser.lib;LLVMSystemZDesc.lib;LLVMSystemZInfo.lib;LLVMSystemZAsmPrinter.lib;LLVMSparcDisassembler.lib;LLVMSparcCodeGen.lib;LLVMSparcAsmParser.lib;LLVMSparcDesc.lib;LLVMSparcInfo.lib;LLVMSparcAsmPrinter.lib;LLVMPowerPCDisassembler.lib;LLVMPowerPCCodeGen.lib;LLVMPowerPCAsmParser.lib;LLVMPowerPCDesc.lib;LLVMPowerPCInfo.lib;LLVMPowerPCAsmPrinter.lib;LLVMNVPTXCodeGen.lib;LLVMNVPTXDesc.lib;LLVMNVPTXInfo.lib;LLVMNVPTXAsmPrinter.lib;LLVMMSP430Disassembler.lib;LLVMMSP430CodeGen.lib;LLVMMSP430AsmParser.lib;LLVMMSP430Desc.lib;LLVMMSP430Info.lib;LLVMMSP430AsmPrinter.lib;LLVMMipsDisassembler.lib;LLVMMipsCodeGen.lib;LLVMMipsAsmParser.lib;LLVMMipsDesc.lib;LLVMMipsInfo.lib;LLVMMipsAsmPrinter.lib;LLVMLanaiDisassembler.lib;LLVMLanaiCodeGen.lib;LLVMLanaiAsmParser.lib;LLVMLanaiDesc.lib;LLVMLanaiAsmPrinter.lib;LLVMLanaiInfo.lib;LLVMHexagonDisassembler.lib;LLVMHexagonCodeGen.lib;LLVMHexagonAsmParser.lib;LLVMHexagonDesc.lib;LLVMHexagonInfo.lib;LLVMBPFDisassembler.lib;LLVMBPFCodeGen.lib;LLVMBPFAsmParser.lib;LLVMBPFDesc.lib;LLVMBPFInfo.lib;LLVMBPFAsmPrinter.lib;LLVMARMDisassembler.lib;LLVMARMCodeGen.lib;LLVMARMAsmParser.lib;LLVMARMDesc.lib;LLVMARMInfo.lib;LLVMARMAsmPrinter.lib;LLVMARMUtils.lib;LLVMAMDGPUDisassembler.lib;LLVMAMDGPUCodeGen.lib;LLVMAMDGPUAsmParser.lib;LLVMAMDGPUDesc.lib;LLVMAMDGPUInfo.lib;LLVMAMDGPUAsmPrinter.lib;LLVMAMDGPUUtils.lib;LLVMAArch64Disassembler.lib;LLVMAArch64CodeGen.lib;LLVMAArch64AsmParser.lib;LLVMAArch64Desc.lib;LLVMAArch64Info.lib;LLVMAArch64AsmPrinter.lib;LLVMAArch64Utils.lib;LLVMXRay.lib;LLVMTableGen.lib;LLVMLibDriver.lib;LLVMOption.lib;LLVMWindowsManifest.lib;LLVMOptRemarks.lib;LLVMSymbolize.lib;LLVMDebugInfoPDB.lib;LLVMDebugInfoDWARF.lib;LLVMX86Disassembler.lib;LLVMX86AsmParser.lib;LLVMX86CodeGen.lib;LLVMGlobalISel.lib;LLVMSelectionDAG.lib;LLVMAsmPrinter.lib;LLVMX86Desc.lib;LLVMMCDisassembler.lib;LLVMX86Info.lib;LLVMX86AsmPrinter.lib;LLVMX86Utils.lib;LLVMMCJIT.lib;LLVMInterpreter.lib;LLVMCodeGen.lib;LLVMOrcJIT.lib;LLVMExecutionEngine.lib;LLVMRuntimeDyld.lib;LLVMFuzzMutate.lib;LLVMTarget.lib;LLVMCoroutines.lib;LLVMipo.lib;LLVMInstrumentation.lib;LLVMVectorize.lib;LLVMScalarOpts.lib;LLVMLinker.lib;LLVMIRReader.lib;LLVMAsmParser.lib;LLVMInstCombine.lib;LLVMBitWriter.lib;LLVMAggressiveInstCombine.lib;LLVMTransformUtils.lib;LLVMAnalysis.lib;LLVMProfileData.lib;LLVMObject.lib;LLVMMCParser.lib;LLVMBitReader.lib;LLVMCore.lib;LLVMTextAPI.lib;LLVMMCA.lib;LLVMMC.lib;LLVMDebugInfoCodeView.lib;LLVMDebugInfoMSF.lib;LLVMBinaryFormat.lib;LLVMSupport.lib;LLVMDemangle.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+    <Bscmake>
+      <PreserveSbr>true</PreserveSbr>
+    </Bscmake>
+    <Bison>
+      <OutputFile>%(Filename).cc</OutputFile>
+      <DefinesFile>%(Filename).h</DefinesFile>
+      <Debug>true</Debug>
+      <Verbose>true</Verbose>
+      <GraphFile>parser;%(GraphFile)</GraphFile>
+    </Bison>
+    <Flex>
+      <OutputFile>%(Filename).lex.cc</OutputFile>
+      <Cpp>true</Cpp>
+      <HeaderFile>
+      </HeaderFile>
+      <CppClassName>
+      </CppClassName>
+      <Debug>true</Debug>
+    </Flex>
+    <PostBuildEvent>
+      <Command>
+      </Command>
+    </PostBuildEvent>
+    <PostBuildEvent>
+      <Message>
+      </Message>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>$(VUES_ROOT)\winflexbison;$(VUES_ROOT)\include;$(VUES_ROOT)\llvm\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalLibraryDirectories>$(VUES_ROOT)\llvm\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>LLVMLineEditor.lib;LLVMMIRParser.lib;LLVMDlltoolDriver.lib;LLVMLTO.lib;LLVMPasses.lib;LLVMObjCARCOpts.lib;LLVMObjectYAML.lib;LLVMCoverage.lib;LLVMXCoreDisassembler.lib;LLVMXCoreCodeGen.lib;LLVMXCoreDesc.lib;LLVMXCoreInfo.lib;LLVMXCoreAsmPrinter.lib;LLVMWebAssemblyDisassembler.lib;LLVMWebAssemblyCodeGen.lib;LLVMWebAssemblyDesc.lib;LLVMWebAssemblyAsmPrinter.lib;LLVMWebAssemblyAsmParser.lib;LLVMWebAssemblyInfo.lib;LLVMSystemZDisassembler.lib;LLVMSystemZCodeGen.lib;LLVMSystemZAsmParser.lib;LLVMSystemZDesc.lib;LLVMSystemZInfo.lib;LLVMSystemZAsmPrinter.lib;LLVMSparcDisassembler.lib;LLVMSparcCodeGen.lib;LLVMSparcAsmParser.lib;LLVMSparcDesc.lib;LLVMSparcInfo.lib;LLVMSparcAsmPrinter.lib;LLVMPowerPCDisassembler.lib;LLVMPowerPCCodeGen.lib;LLVMPowerPCAsmParser.lib;LLVMPowerPCDesc.lib;LLVMPowerPCInfo.lib;LLVMPowerPCAsmPrinter.lib;LLVMNVPTXCodeGen.lib;LLVMNVPTXDesc.lib;LLVMNVPTXInfo.lib;LLVMNVPTXAsmPrinter.lib;LLVMMSP430Disassembler.lib;LLVMMSP430CodeGen.lib;LLVMMSP430AsmParser.lib;LLVMMSP430Desc.lib;LLVMMSP430Info.lib;LLVMMSP430AsmPrinter.lib;LLVMMipsDisassembler.lib;LLVMMipsCodeGen.lib;LLVMMipsAsmParser.lib;LLVMMipsDesc.lib;LLVMMipsInfo.lib;LLVMMipsAsmPrinter.lib;LLVMLanaiDisassembler.lib;LLVMLanaiCodeGen.lib;LLVMLanaiAsmParser.lib;LLVMLanaiDesc.lib;LLVMLanaiAsmPrinter.lib;LLVMLanaiInfo.lib;LLVMHexagonDisassembler.lib;LLVMHexagonCodeGen.lib;LLVMHexagonAsmParser.lib;LLVMHexagonDesc.lib;LLVMHexagonInfo.lib;LLVMBPFDisassembler.lib;LLVMBPFCodeGen.lib;LLVMBPFAsmParser.lib;LLVMBPFDesc.lib;LLVMBPFInfo.lib;LLVMBPFAsmPrinter.lib;LLVMARMDisassembler.lib;LLVMARMCodeGen.lib;LLVMARMAsmParser.lib;LLVMARMDesc.lib;LLVMARMInfo.lib;LLVMARMAsmPrinter.lib;LLVMARMUtils.lib;LLVMAMDGPUDisassembler.lib;LLVMAMDGPUCodeGen.lib;LLVMAMDGPUAsmParser.lib;LLVMAMDGPUDesc.lib;LLVMAMDGPUInfo.lib;LLVMAMDGPUAsmPrinter.lib;LLVMAMDGPUUtils.lib;LLVMAArch64Disassembler.lib;LLVMAArch64CodeGen.lib;LLVMAArch64AsmParser.lib;LLVMAArch64Desc.lib;LLVMAArch64Info.lib;LLVMAArch64AsmPrinter.lib;LLVMAArch64Utils.lib;LLVMXRay.lib;LLVMTableGen.lib;LLVMLibDriver.lib;LLVMOption.lib;LLVMWindowsManifest.lib;LLVMOptRemarks.lib;LLVMSymbolize.lib;LLVMDebugInfoPDB.lib;LLVMDebugInfoDWARF.lib;LLVMX86Disassembler.lib;LLVMX86AsmParser.lib;LLVMX86CodeGen.lib;LLVMGlobalISel.lib;LLVMSelectionDAG.lib;LLVMAsmPrinter.lib;LLVMX86Desc.lib;LLVMMCDisassembler.lib;LLVMX86Info.lib;LLVMX86AsmPrinter.lib;LLVMX86Utils.lib;LLVMMCJIT.lib;LLVMInterpreter.lib;LLVMCodeGen.lib;LLVMOrcJIT.lib;LLVMExecutionEngine.lib;LLVMRuntimeDyld.lib;LLVMFuzzMutate.lib;LLVMTarget.lib;LLVMCoroutines.lib;LLVMipo.lib;LLVMInstrumentation.lib;LLVMVectorize.lib;LLVMScalarOpts.lib;LLVMLinker.lib;LLVMIRReader.lib;LLVMAsmParser.lib;LLVMInstCombine.lib;LLVMBitWriter.lib;LLVMAggressiveInstCombine.lib;LLVMTransformUtils.lib;LLVMAnalysis.lib;LLVMProfileData.lib;LLVMObject.lib;LLVMMCParser.lib;LLVMBitReader.lib;LLVMCore.lib;LLVMTextAPI.lib;LLVMMCA.lib;LLVMMC.lib;LLVMDebugInfoCodeView.lib;LLVMDebugInfoMSF.lib;LLVMBinaryFormat.lib;LLVMSupport.lib;LLVMDemangle.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <LinkTimeCodeGeneration />
+    </Link>
+    <Bison>
+      <OutputFile>%(Filename).cc</OutputFile>
+      <DefinesFile>%(Filename).h</DefinesFile>
+      <Debug>true</Debug>
+      <Verbose>true</Verbose>
+      <GraphFile>parser;%(GraphFile)</GraphFile>
+    </Bison>
+    <Flex>
+      <OutputFile>%(Filename).lex.cc</OutputFile>
+      <Cpp>true</Cpp>
+      <HeaderFile>
+      </HeaderFile>
+      <CppClassName>
+      </CppClassName>
+      <Debug>true</Debug>
+    </Flex>
+    <PostBuildEvent>
+      <Command>
+      </Command>
+    </PostBuildEvent>
+    <PostBuildEvent>
+      <Message>
+      </Message>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>$(VUES_ROOT)\winflexbison;$(VUES_ROOT)\include;$(VUES_ROOT)\llvm\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalLibraryDirectories>$(VUES_ROOT)\llvm\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>LLVMLineEditor.lib;LLVMMIRParser.lib;LLVMDlltoolDriver.lib;LLVMLTO.lib;LLVMPasses.lib;LLVMObjCARCOpts.lib;LLVMObjectYAML.lib;LLVMCoverage.lib;LLVMXCoreDisassembler.lib;LLVMXCoreCodeGen.lib;LLVMXCoreDesc.lib;LLVMXCoreInfo.lib;LLVMXCoreAsmPrinter.lib;LLVMWebAssemblyDisassembler.lib;LLVMWebAssemblyCodeGen.lib;LLVMWebAssemblyDesc.lib;LLVMWebAssemblyAsmPrinter.lib;LLVMWebAssemblyAsmParser.lib;LLVMWebAssemblyInfo.lib;LLVMSystemZDisassembler.lib;LLVMSystemZCodeGen.lib;LLVMSystemZAsmParser.lib;LLVMSystemZDesc.lib;LLVMSystemZInfo.lib;LLVMSystemZAsmPrinter.lib;LLVMSparcDisassembler.lib;LLVMSparcCodeGen.lib;LLVMSparcAsmParser.lib;LLVMSparcDesc.lib;LLVMSparcInfo.lib;LLVMSparcAsmPrinter.lib;LLVMPowerPCDisassembler.lib;LLVMPowerPCCodeGen.lib;LLVMPowerPCAsmParser.lib;LLVMPowerPCDesc.lib;LLVMPowerPCInfo.lib;LLVMPowerPCAsmPrinter.lib;LLVMNVPTXCodeGen.lib;LLVMNVPTXDesc.lib;LLVMNVPTXInfo.lib;LLVMNVPTXAsmPrinter.lib;LLVMMSP430Disassembler.lib;LLVMMSP430CodeGen.lib;LLVMMSP430AsmParser.lib;LLVMMSP430Desc.lib;LLVMMSP430Info.lib;LLVMMSP430AsmPrinter.lib;LLVMMipsDisassembler.lib;LLVMMipsCodeGen.lib;LLVMMipsAsmParser.lib;LLVMMipsDesc.lib;LLVMMipsInfo.lib;LLVMMipsAsmPrinter.lib;LLVMLanaiDisassembler.lib;LLVMLanaiCodeGen.lib;LLVMLanaiAsmParser.lib;LLVMLanaiDesc.lib;LLVMLanaiAsmPrinter.lib;LLVMLanaiInfo.lib;LLVMHexagonDisassembler.lib;LLVMHexagonCodeGen.lib;LLVMHexagonAsmParser.lib;LLVMHexagonDesc.lib;LLVMHexagonInfo.lib;LLVMBPFDisassembler.lib;LLVMBPFCodeGen.lib;LLVMBPFAsmParser.lib;LLVMBPFDesc.lib;LLVMBPFInfo.lib;LLVMBPFAsmPrinter.lib;LLVMARMDisassembler.lib;LLVMARMCodeGen.lib;LLVMARMAsmParser.lib;LLVMARMDesc.lib;LLVMARMInfo.lib;LLVMARMAsmPrinter.lib;LLVMARMUtils.lib;LLVMAMDGPUDisassembler.lib;LLVMAMDGPUCodeGen.lib;LLVMAMDGPUAsmParser.lib;LLVMAMDGPUDesc.lib;LLVMAMDGPUInfo.lib;LLVMAMDGPUAsmPrinter.lib;LLVMAMDGPUUtils.lib;LLVMAArch64Disassembler.lib;LLVMAArch64CodeGen.lib;LLVMAArch64AsmParser.lib;LLVMAArch64Desc.lib;LLVMAArch64Info.lib;LLVMAArch64AsmPrinter.lib;LLVMAArch64Utils.lib;LLVMXRay.lib;LLVMTableGen.lib;LLVMLibDriver.lib;LLVMOption.lib;LLVMWindowsManifest.lib;LLVMOptRemarks.lib;LLVMSymbolize.lib;LLVMDebugInfoPDB.lib;LLVMDebugInfoDWARF.lib;LLVMX86Disassembler.lib;LLVMX86AsmParser.lib;LLVMX86CodeGen.lib;LLVMGlobalISel.lib;LLVMSelectionDAG.lib;LLVMAsmPrinter.lib;LLVMX86Desc.lib;LLVMMCDisassembler.lib;LLVMX86Info.lib;LLVMX86AsmPrinter.lib;LLVMX86Utils.lib;LLVMMCJIT.lib;LLVMInterpreter.lib;LLVMCodeGen.lib;LLVMOrcJIT.lib;LLVMExecutionEngine.lib;LLVMRuntimeDyld.lib;LLVMFuzzMutate.lib;LLVMTarget.lib;LLVMCoroutines.lib;LLVMipo.lib;LLVMInstrumentation.lib;LLVMVectorize.lib;LLVMScalarOpts.lib;LLVMLinker.lib;LLVMIRReader.lib;LLVMAsmParser.lib;LLVMInstCombine.lib;LLVMBitWriter.lib;LLVMAggressiveInstCombine.lib;LLVMTransformUtils.lib;LLVMAnalysis.lib;LLVMProfileData.lib;LLVMObject.lib;LLVMMCParser.lib;LLVMBitReader.lib;LLVMCore.lib;LLVMTextAPI.lib;LLVMMCA.lib;LLVMMC.lib;LLVMDebugInfoCodeView.lib;LLVMDebugInfoMSF.lib;LLVMBinaryFormat.lib;LLVMSupport.lib;LLVMDemangle.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <LinkTimeCodeGeneration />
+    </Link>
+    <Bison>
+      <OutputFile>%(Filename).cc</OutputFile>
+      <DefinesFile>%(Filename).h</DefinesFile>
+      <Debug>true</Debug>
+      <Verbose>true</Verbose>
+      <GraphFile>parser;%(GraphFile)</GraphFile>
+    </Bison>
+    <Flex>
+      <OutputFile>%(Filename).lex.cc</OutputFile>
+      <Cpp>true</Cpp>
+      <HeaderFile>
+      </HeaderFile>
+      <CppClassName>
+      </CppClassName>
+      <Debug>true</Debug>
+    </Flex>
+    <PostBuildEvent>
+      <Command>
+      </Command>
+    </PostBuildEvent>
+    <PostBuildEvent>
+      <Message>
+      </Message>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="AbstractSyntaxTree.cc" />
+    <ClCompile Include="Builtin.cc" />
+    <ClCompile Include="Compiler.cc" />
+    <ClCompile Include="GeneratorContext.cc" />
+    <ClCompile Include="Helpers.cc" />
+    <ClCompile Include="Lexer.cc" />
+    <ClCompile Include="Lexer.lex.cc" />
+    <ClCompile Include="Parser.cc" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="AbstractSyntaxTree.h" />
+    <ClInclude Include="Builtin.h" />
+    <ClInclude Include="Compiler.h" />
+    <ClInclude Include="GeneratorContext.h" />
+    <ClInclude Include="Helpers.h" />
+    <ClInclude Include="Lexer.h" />
+    <ClInclude Include="Parser.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Flex Include="Lexer.l" />
+  </ItemGroup>
+  <ItemGroup>
+    <Bison Include="Parser.y" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+    <Import Project="..\configuration\win_flex_bison\win_flex_bison_custom_build.targets" />
+  </ImportGroup>
+</Project>
