@@ -265,18 +265,19 @@
     <ClCompile Include="GeneratorContext.cc" />
     <ClCompile Include="Lexer.cc" />
     <ClCompile Include="Lexer.lex.cc" />
+    <ClCompile Include="LocalRegistry.cc" />
     <ClCompile Include="Parser.cc" />
     <ClCompile Include="Utility.cc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AbstractSyntaxTree.h" />
     <ClInclude Include="Builtin.h" />
-    <ClInclude Include="Compiler.h" />
     <ClInclude Include="Error.h" />
     <ClInclude Include="ErrorHandling.h" />
     <ClInclude Include="GeneratorContext.h" />
     <ClInclude Include="Lexer.h" />
     <ClInclude Include="Parser.h" />
+    <ClInclude Include="Registry.h" />
     <ClInclude Include="Utility.h" />
   </ItemGroup>
   <ItemGroup>

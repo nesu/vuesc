@@ -52,7 +52,7 @@
 %type <expression_vector> method_call_args;
 %type <variable_vector> method_decl_args;
 %type <block> program statements block
-%type <statement> statement var_decl val_decl method_arg_decl method_decl return_statement
+%type <statement> statement return var_decl val_decl method_arg_decl method_decl
 
 %left TASSIGN
 
@@ -77,8 +77,8 @@ statement
         | val_decl
         | method_decl
         | method_arg_decl
-        | return_statement
         | expression { $$ = new ExpressionStatement(*$1); } 
+        | return
 ;
 
 
@@ -88,11 +88,11 @@ block
 ;
 
 
-return_statement
-        : TRETURN identifier        { $$ = new ReturnStatement(*$2); }
+return
+        : TRETURN                   { $$ = new BlankReturnStatement(); }
+        | TRETURN identifier        { $$ = new ReturnStatement(*$2); }
         | TRETURN method_call_expr  { $$ = new ReturnStatement(*$2); }
         | TRETURN constant          { $$ = new ReturnStatement(*$2); }
-        | TRETURN                   { $$ = new BlankReturnStatement(); }
 ;
 
 var_decl 
@@ -101,7 +101,7 @@ var_decl
 ;
 
 val_decl
-        : TVAL identifier TCOLON identifier TASSIGN expression { $$ = new VariableDeclaration(*$2, *$4, $6); }
+        : TVAL identifier TCOLON identifier TASSIGN expression { $$ = new VariableDeclaration(*$2, *$4, $6, false); }
 ;
 
 

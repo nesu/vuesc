@@ -604,13 +604,13 @@ namespace  Vues  {
 
   case 10:
 #line 80 "Parser.y" // lalr1.cc:919
-    { (yylhs.value.statement) = (yystack_[0].value.statement); }
+    { (yylhs.value.statement) = new ExpressionStatement(*(yystack_[0].value.expression)); }
 #line 609 "Parser.cc" // lalr1.cc:919
     break;
 
   case 11:
 #line 81 "Parser.y" // lalr1.cc:919
-    { (yylhs.value.statement) = new ExpressionStatement(*(yystack_[0].value.expression)); }
+    { (yylhs.value.statement) = (yystack_[0].value.statement); }
 #line 615 "Parser.cc" // lalr1.cc:919
     break;
 
@@ -628,13 +628,13 @@ namespace  Vues  {
 
   case 14:
 #line 92 "Parser.y" // lalr1.cc:919
-    { (yylhs.value.statement) = new ReturnStatement(*(yystack_[0].value.identifier)); }
+    { (yylhs.value.statement) = new BlankReturnStatement(); }
 #line 633 "Parser.cc" // lalr1.cc:919
     break;
 
   case 15:
 #line 93 "Parser.y" // lalr1.cc:919
-    { (yylhs.value.statement) = new ReturnStatement(*(yystack_[0].value.expression)); }
+    { (yylhs.value.statement) = new ReturnStatement(*(yystack_[0].value.identifier)); }
 #line 639 "Parser.cc" // lalr1.cc:919
     break;
 
@@ -646,7 +646,7 @@ namespace  Vues  {
 
   case 17:
 #line 95 "Parser.y" // lalr1.cc:919
-    { (yylhs.value.statement) = new BlankReturnStatement(); }
+    { (yylhs.value.statement) = new ReturnStatement(*(yystack_[0].value.expression)); }
 #line 651 "Parser.cc" // lalr1.cc:919
     break;
 
@@ -664,7 +664,7 @@ namespace  Vues  {
 
   case 20:
 #line 104 "Parser.y" // lalr1.cc:919
-    { (yylhs.value.statement) = new VariableDeclaration(*(yystack_[4].value.identifier), *(yystack_[2].value.identifier), (yystack_[0].value.expression)); }
+    { (yylhs.value.statement) = new VariableDeclaration(*(yystack_[4].value.identifier), *(yystack_[2].value.identifier), (yystack_[0].value.expression), false); }
 #line 669 "Parser.cc" // lalr1.cc:919
     break;
 
@@ -996,9 +996,9 @@ namespace  Vues  {
   const unsigned char
    Parser ::yydefact_[] =
   {
-       2,    35,    36,    34,     0,     0,     0,    17,     0,     3,
-       4,    10,     6,     7,     9,     8,    30,    31,    11,    32,
-      33,     0,     0,     0,    15,    14,    16,     1,     5,    40,
+       2,    35,    36,    34,     0,     0,     0,    14,     0,     3,
+       4,    11,     6,     7,     9,     8,    30,    31,    10,    32,
+      33,     0,     0,     0,    16,    15,    17,     1,     5,    40,
        0,     0,    25,     0,     0,    38,    37,    39,    41,     0,
       21,    29,    32,    26,     0,     0,    18,     0,    28,     0,
        0,     0,     0,     0,     0,    42,    22,     0,     0,    23,
@@ -1073,7 +1073,7 @@ namespace  Vues  {
    Parser ::yyr2_[] =
   {
        0,     2,     0,     1,     1,     2,     1,     1,     1,     1,
-       1,     1,     3,     2,     2,     2,     2,     1,     4,     6,
+       1,     1,     3,     2,     1,     2,     2,     2,     4,     6,
        6,     3,     5,     6,     8,     0,     1,     3,     4,     3,
        1,     1,     1,     1,     1,     1,     1,     1,     1,     1,
        0,     1,     3
@@ -1089,10 +1089,10 @@ namespace  Vues  {
   "$end", "error", "$undefined", "TINTEGER", "TSTRING", "TIDENTIFIER",
   "TFUN", "TVAR", "TVAL", "TRETURN", "TLPAREN", "TRPAREN", "TLBRACE",
   "TRBRACE", "TCOMMA", "TDOT", "TCOLON", "TQUOTE", "TASSIGN", "$accept",
-  "program", "statements", "statement", "block", "return_statement",
-  "var_decl", "val_decl", "method_arg_decl", "method_decl",
-  "method_decl_args", "method_call_expr", "assignment_expr", "expression",
-  "identifier", "constant", "method_call_arg", "method_call_args", YY_NULLPTR
+  "program", "statements", "statement", "block", "return", "var_decl",
+  "val_decl", "method_arg_decl", "method_decl", "method_decl_args",
+  "method_call_expr", "assignment_expr", "expression", "identifier",
+  "constant", "method_call_arg", "method_call_args", YY_NULLPTR
   };
 
 

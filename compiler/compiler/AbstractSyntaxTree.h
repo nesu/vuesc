@@ -109,12 +109,13 @@ class VariableDeclaration : public Statement
         Identifier& identifier;
         const Identifier& type;
         Expression* expression;
+        const bool is_mutable;
 
-        VariableDeclaration(Identifier& identifier, const Identifier& type, Expression* expression) :
-            identifier(identifier), type(type), expression(expression) {}
+        VariableDeclaration(Identifier& identifier, const Identifier& type, Expression* expression, const bool is_mutable = true) :
+            identifier(identifier), type(type), expression(expression), is_mutable(is_mutable) {}
 
-        VariableDeclaration(Identifier& identifier, const Identifier& type) :
-            identifier(identifier), type(type) {
+        VariableDeclaration(Identifier& identifier, const Identifier& type, const bool is_mutable = true) :
+            identifier(identifier), type(type), is_mutable(is_mutable) {
             expression = nullptr;
         }
 

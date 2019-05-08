@@ -9,10 +9,8 @@
 
 Value* Integer::generator(GeneratorContext& context)
 {
-    // TODO: Generator debugging.
     return llvm::ConstantInt::get(context.i64, value, true);
 }
-
 
 Value* String::generator(GeneratorContext& context)
 {
@@ -35,12 +33,12 @@ Value* String::generator(GeneratorContext& context)
 
 Value* Identifier::generator(GeneratorContext& context)
 {
-    if (context.locals().find(named) == context.locals().end()) {
+    if (!context.locals()->contains(named)) {
         SCRIPT_ERROR << "Identifier " << named << " does not exist";
         return nullptr;
     }
-    // TODO: Generator debugging.
-    return new LoadInst(context.locals()[named], "", false, context.current_block()->block);
+
+    return new LoadInst(context.locals()->get(named)->instr, "", false, context.current_block()->block);
 }
 
 
@@ -54,31 +52,32 @@ Value* Assignment::generator(GeneratorContext& context)
         return nullptr;
     }
 
-    // TODO: Assignment for immutable variables.
-    if (context.locals().find(left.named) == context.locals().end()) {
+    if (!context.locals()->contains(left.named)) {
         SCRIPT_ERROR << "Undeclared variable with name " << left.named;
         return nullptr;
     }
 
-    AllocaInst* variable = context.locals()[left.named];
-    Type* vty = variable->getType()->getElementType();
-    if (value->getType() != vty)
+    BlockLocal* local = context.locals()->get(left.named);
+    if (value->getType() != local->instr->getType()->getElementType())
     {
         SCRIPT_ERROR << "Assigning incompatible type for variable " << left.named;
         return nullptr;
     }
 
-    // TODO: Generator debugging.
-    return new StoreInst(value, context.locals()[left.named], false, context.current_block()->block);
+    if (local->immutable && local->assigned)
+    {
+        SCRIPT_ERROR << "Cannot assign value on immutable variable. Use \"var\" instead.";
+        return nullptr;
+    }
+
+    return new StoreInst(value, local->instr, false, context.current_block()->block);
 }
 
 
 Value* Block::generator(GeneratorContext& context)
 {
     Value* last = nullptr;
-    std::cout << "Block statement count: " << statements.size() << std::endl;
     for (auto it : statements) {
-        // TODO: Generator reporting.
         last = it->generator(context);
     }
 
@@ -88,7 +87,6 @@ Value* Block::generator(GeneratorContext& context)
 
 Value* ExpressionStatement::generator(GeneratorContext&  context)
 {
-    // TODO: Generator reporting.
     context.current_block()->ret = expression.generator(context);
     return context.current_block()->ret;
 }
@@ -98,15 +96,23 @@ Value* VariableDeclaration::generator(GeneratorContext& context)
 {
     // TODO: Find out what is AddrSpace and if zero is good number here.
     AllocaInst* inst = new AllocaInst(context.typeof(type), 0, identifier.named.c_str(), context.current_block()->block);
-    context.locals()[identifier.named] = inst;
+    BlockLocal* local = context.locals()->create(identifier.named, inst, !is_mutable, false);
 
     if (expression != nullptr)
     {
         Assignment assigment(identifier, *expression);
-        assigment.generator(context);
+        Value* ret = assigment.generator(context);
+        if (ret != nullptr)
+        {
+            local->assigned = true;
+        }
+    }
+    else if (!is_mutable)
+    {
+        SCRIPT_ERROR << "Immutable variables must have assigned value.";
+        return nullptr;
     }
 
-    // TODO: Generator reporting.
     return inst;
 }
 
@@ -117,20 +123,17 @@ Value* MethodCall::generator(GeneratorContext& context)
 
     if (func == nullptr)
     {
-        // TODO: Error reporting.
-        std::cerr << "Function " << identifier.named << " is undefined." << std::endl;
+        SCRIPT_ERROR << "Method " << identifier.named << " is not defined.";
         return nullptr;
     }
 
     // Check for default arguments.
     size_t provided_argc = arguments.size();
     size_t required_argc = func->arg_size();
-    bool rr = func->isVarArg();
     
     if (provided_argc > required_argc && !func->isVarArg())
     {
-        // TODO: Error reporting.
-        std::cerr << "Function " << identifier.named << " takes " << required_argc << " arguments, but " << provided_argc << " given." << std::endl;
+        SCRIPT_ERROR << "Function " << identifier.named << " takes " << required_argc << " arguments, but " << provided_argc << " given.";
         return nullptr;
     }
 
@@ -139,7 +142,6 @@ Value* MethodCall::generator(GeneratorContext& context)
         args.push_back(it->generator(context));
     }
 
-    // TODO: Generator debugging.
     return CallInst::Create(func, makeArrayRef(args), "", context.current_block()->block);
 }
 
@@ -147,7 +149,6 @@ Value* MethodCall::generator(GeneratorContext& context)
 
 Value* MethodDeclaration::generator(GeneratorContext& context)
 {
-    // TODO: Generator reporting.
     std::vector<Type*> method_decl_args;
     for (auto it : arguments) {
         method_decl_args.push_back(context.typeof(it->type));
@@ -197,7 +198,6 @@ Value* ReturnStatement::generator(GeneratorContext& context)
 {
     Value* ret = expression.generator(context);
     context.current_block()->ret = ret;
-    // TODO: Generator reporting.
     return ret;
 }
 

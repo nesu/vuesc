@@ -7,7 +7,6 @@
 #include "llvm/Support/CommandLine.h"
 #include "llvm/Support/Debug.h"
 
-#include "Compiler.h"
 #include "GeneratorContext.h"
 #include "Lexer.h"
 #include "Error.h"
@@ -17,7 +16,6 @@ extern Block* root_block;
 
 int main(int argc, char* argv[])
 {
-    Compiler* compiler = Compiler::get();
     cl::opt<std::string> ifn(cl::Positional, cl::Required, cl::desc("<input file>"));
     cl::opt<std::string> ofn("o", cl::Required, cl::desc("Bitcode output file."), cl::value_desc("output file"));
     cl::opt<int> parserd("parser-debug-level", cl::desc("Debug level for parser."), cl::value_desc("int"));
@@ -56,53 +54,4 @@ int main(int argc, char* argv[])
 
 
     return EXIT_SUCCESS;
-}
-
-/*
-int main(int argc, char* argv[])
-{
-    std::ifstream input("D:/vuesc/compiler/Debug/init.vs");
-    if (!input.good()) {
-        std::cout << "Bad file." << std::endl;
-        exit(EXIT_FAILURE);
-    }
-
-    Lexer lexer(&input);
-    Vues::Parser* parser = new Vues::Parser(lexer);
-    parser->set_debug_level(1);
-
-    int pr = parser->parse();
-    if (pr != 0) {
-        exit(EXIT_FAILURE);
-    }
-    
-    
-    GeneratorContext context;
-    context.generate(*root_block);
-    
-    auto fd_ostream = make_raw_fd_ostream("bitcode.bc");
-    llvm::WriteBitcodeToFile(*context.module, *fd_ostream);
-
-    //context.execute();
-    
-    std::error_code ec;
-    raw_ostream* out = new raw_fd_ostream("bitcode.bc", ec, llvm::sys::fs::OpenFlags::F_None);
-
-    llvm::WriteBitcodeToFile(*context.module, *out);
-    
-
-    system("pause");
-    return 0;
-}*/
-
-Compiler* Compiler::self = nullptr;
-Compiler::Compiler() {}
-
-Compiler* Compiler::get()
-{
-    if (self == nullptr) {
-        self = new Compiler();
-    }
-
-    return self;
 }

@@ -11,16 +11,20 @@
 #include "llvm/Support/TargetRegistry.h"
 
 #include "AbstractSyntaxTree.h"
+#include "Registry.h"
 
 using namespace llvm;
 
 class GeneratorBlock
 {
     public:
-        BasicBlock* block;
-        std::map<std::string, AllocaInst*> locals;
-        Value* ret;
+        LocalRegistry* locals;
+        GeneratorBlock() {
+            locals = new LocalRegistry();
+        }
 
+        BasicBlock* block;
+        Value* ret;
 };
 
 class GeneratorContext
@@ -49,7 +53,7 @@ class GeneratorContext
             return block_stack.top();
         }
 
-        std::map<std::string, AllocaInst*>& locals() {
+        LocalRegistry* locals() {
             return block_stack.top()->locals;
         }
 

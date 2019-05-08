@@ -1,12 +1,8 @@
-fun ayyoo(): string
+fun ation()
 {
-	var eyyo: string = "AAA"
-	return eyyo
+	val simple: string = "AAAA"
+	printf("%s\n", simple)
+	return
 }
 
-var eyyo: string = "strfk"
-printf("%s", ayyoo())
-
-ayyoo()
-
-/* THIS IS COMMENT PLEASE NO PARSE */
+ation()

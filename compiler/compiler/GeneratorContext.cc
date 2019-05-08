@@ -50,11 +50,6 @@ void GeneratorContext::__stdlib_registry()
     FunctionType* ft = FunctionType::get(i32, makeArrayRef(argument_type_vec), true);
     Function* fn = Function::Create(ft, GlobalValue::LinkageTypes::ExternalLinkage, "printf", module);
     fn->setCallingConv(CallingConv::C);
-
-    //TypeFinder::
-    
-    //AttrListPtr
-
 }
 
 
