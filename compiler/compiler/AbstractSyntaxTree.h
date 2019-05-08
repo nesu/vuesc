@@ -35,9 +35,16 @@ class ReturnStatement : public Statement
         Expression& expression;
         ReturnStatement(Expression& expression) :
             expression(expression) {}
+
         virtual llvm::Value* generator(GeneratorContext& context);
 };
 
+class BlankReturnStatement : public Statement
+{
+    public:
+        BlankReturnStatement() {}
+        virtual llvm::Value* generator(GeneratorContext& context);
+};
 
 class Identifier : public Expression
 {
@@ -102,12 +109,15 @@ class VariableDeclaration : public Statement
         Identifier& identifier;
         const Identifier& type;
         Expression* expression;
+
         VariableDeclaration(Identifier& identifier, const Identifier& type, Expression* expression) :
             identifier(identifier), type(type), expression(expression) {}
+
         VariableDeclaration(Identifier& identifier, const Identifier& type) :
             identifier(identifier), type(type) {
             expression = nullptr;
         }
+
         virtual llvm::Value* generator(GeneratorContext& context);
 };
 
@@ -126,6 +136,15 @@ class MethodDeclaration : public Statement
             const Identifier& type,
             Block& block
         ) : identifier(identifier), arguments(arguments), type(type), method_block(block) {}
+
+        MethodDeclaration(
+            const Identifier& identifier,
+            const std::vector<VariableDeclaration*> arguments,
+            Block& block
+        ) : identifier(identifier), arguments(arguments), type(*(new Identifier("void"))), method_block(block) {
+            // Methods created without type identifier are set to void by default.
+        }
+
         virtual llvm::Value* generator(GeneratorContext& context);
 };
 

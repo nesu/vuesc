@@ -1,6 +1,11 @@
+#define DEBUG_TYPE "Generator"
+
 #include <iostream>
 
+#include "llvm/Support/Debug.h"
+
 #include "GeneratorContext.h"
+#include "Error.h"
 
 Value* Integer::generator(GeneratorContext& context)
 {
@@ -31,7 +36,7 @@ Value* String::generator(GeneratorContext& context)
 Value* Identifier::generator(GeneratorContext& context)
 {
     if (context.locals().find(named) == context.locals().end()) {
-        std::cerr << "Undeclared variable." << std::endl;
+        SCRIPT_ERROR << "Identifier " << named << " does not exist";
         return nullptr;
     }
     // TODO: Generator debugging.
@@ -42,16 +47,16 @@ Value* Identifier::generator(GeneratorContext& context)
 Value* Assignment::generator(GeneratorContext& context)
 {
     Value* value = right.generator(context);
+
     if (value == nullptr)
     {
-        std::cerr << "Invalid assignment expression." << std::endl;
+        SCRIPT_ERROR << "Missing expression for identifier " << left.named;
         return nullptr;
     }
 
     // TODO: Assignment for immutable variables.
     if (context.locals().find(left.named) == context.locals().end()) {
-        // TODO: Error reporting.
-        std::cerr << "Undeclared variable." << std::endl;
+        SCRIPT_ERROR << "Undeclared variable with name " << left.named;
         return nullptr;
     }
 
@@ -59,7 +64,7 @@ Value* Assignment::generator(GeneratorContext& context)
     Type* vty = variable->getType()->getElementType();
     if (value->getType() != vty)
     {
-        std::cerr << "Incompatible types." << std::endl;
+        SCRIPT_ERROR << "Assigning incompatible type for variable " << left.named;
         return nullptr;
     }
 
@@ -120,44 +125,14 @@ Value* MethodCall::generator(GeneratorContext& context)
     // Check for default arguments.
     size_t provided_argc = arguments.size();
     size_t required_argc = func->arg_size();
-
-    if (provided_argc > required_argc)
+    bool rr = func->isVarArg();
+    
+    if (provided_argc > required_argc && !func->isVarArg())
     {
         // TODO: Error reporting.
         std::cerr << "Function " << identifier.named << " takes " << required_argc << " arguments, but " << provided_argc << " given." << std::endl;
         return nullptr;
     }
-
-    // Check for default arguments at positions where arguments have default values.
-    if (required_argc > provided_argc)
-    {
-        /*for (auto &block : func->getBasicBlockList())
-        {
-            for (auto &instr : block.getInstList())
-            {
-                StoreInst* storing = llvm::dyn_cast<StoreInst>(&instr);
-                if (storing == nullptr) {
-                    continue;
-                }
-
-                std::cout << storing->getValueName() << " | " <<  storing->getName().str() << std::endl;
-            }
-        }*/
-
-
-        Function::arg_iterator rarg = func->arg_begin();
-        for (int it = 0; it < required_argc; it++)
-        {
-            //AllocaInst* alloc = cast<AllocaInst>(rarguments);
-            std::string argn = rarg->getName().str();
-            std::cout << argn << std::endl;
-            //auto defaulted = context.locals()[argn];
-            // func->getBasicBlockList().begin()
-            auto lso = context.locals();
-            rarg++;
-        }
-    }
-
 
     std::vector<Value*> args;
     for (auto it : arguments) {
@@ -178,8 +153,6 @@ Value* MethodDeclaration::generator(GeneratorContext& context)
         method_decl_args.push_back(context.typeof(it->type));
     }
 
-
-
     // isVarArg true only when function takes number of arguments.
     // http://llvm.org/doxygen/Function_8h_source.html
     llvm::FunctionType* ft = FunctionType::get(context.typeof(type), makeArrayRef(method_decl_args), false);
@@ -187,7 +160,6 @@ Value* MethodDeclaration::generator(GeneratorContext& context)
     Function* func = Function::Create(ft, GlobalValue::ExternalLinkage, identifier.named.c_str(), context.module);
     BasicBlock* block = BasicBlock::Create(context.getctx(), "entry", func, 0);
     context.push(block);
-    // TODO: Function validation.
 
     Function::arg_iterator rarguments = func->arg_begin();
     for (auto it : arguments)
@@ -204,6 +176,15 @@ Value* MethodDeclaration::generator(GeneratorContext& context)
     }
         
     method_block.generator(context);
+    llvm::Value* retty = context.current_block()->ret;
+    
+    // Block ended with some value.
+    if (retty != NULL && context.typeof(type) != retty->getType())
+    {
+        SCRIPT_ERROR << "Missing return statement or type of return value does not match method signature.";
+        return nullptr;
+    }
+
     ReturnInst::Create(context.getctx(), context.current_block()->ret, block);
     context.pop();
 
@@ -219,3 +200,12 @@ Value* ReturnStatement::generator(GeneratorContext& context)
     // TODO: Generator reporting.
     return ret;
 }
+
+
+Value* BlankReturnStatement::generator(GeneratorContext& context)
+{
+    context.current_block()->ret = 0;
+    return nullptr;
+}
+
+#undef DEBUG_TYPE

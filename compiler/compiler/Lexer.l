@@ -22,7 +22,8 @@
 [ \t\n]                             ;
 
 "var"                               return TOKEN(Token::TVAR);
-"def"                               return TOKEN(Token::TDEF);
+"val"                               return TOKEN(Token::TVAL);
+"fun"                               return TOKEN(Token::TFUN);
 "return"                            return TOKEN(Token::TRETURN);
 
 

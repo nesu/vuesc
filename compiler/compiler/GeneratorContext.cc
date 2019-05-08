@@ -2,10 +2,10 @@
 
 #include "llvm/IR/IRPrintingPasses.h"
 #include "llvm/IR/PassManager.h"
+#include "llvm/IR/Verifier.h"
 #include "llvm/Transforms/IPO/PassManagerBuilder.h"
 #include "llvm/ExecutionEngine/ExecutionEngine.h"
 #include "llvm/Support/TargetSelect.h"
-#include "llvm/IR/Verifier.h"
 
 #include "Compiler.h"
 #include "GeneratorContext.h"
@@ -27,7 +27,6 @@ GeneratorContext::GeneratorContext()
     i64 = Type::getInt64Ty(context);
     double_ = Type::getDoubleTy(context);
     void_ = Type::getVoidTy(context);
-    
 }
 
 llvm::Type* GeneratorContext::typeof(const Identifier& type)
@@ -43,7 +42,7 @@ llvm::Type* GeneratorContext::typeof(const Identifier& type)
 }
 
 
-llvm::Value * GeneratorContext::__stdlib_registry()
+void GeneratorContext::__stdlib_registry()
 {
     std::vector<Type*> argument_type_vec;
     argument_type_vec.push_back(i8_ptr);
@@ -52,33 +51,10 @@ llvm::Value * GeneratorContext::__stdlib_registry()
     Function* fn = Function::Create(ft, GlobalValue::LinkageTypes::ExternalLinkage, "printf", module);
     fn->setCallingConv(CallingConv::C);
 
+    //TypeFinder::
     
-    
-    /*ft = FunctionType::get(i32, makeArrayRef(argument_type_vec), true);
-    fn = Function::Create(ft, GlobalValue::LinkageTypes::ExternalLinkage, Twine("printf"), module);
-    fn->setCallingConv(CallingConv::C);*/
+    //AttrListPtr
 
-    /*Function::arg_iterator it = fn->arg_begin();
-    Value* format = &*it++;
-    format->setName("format");
-    std::vector<Value*> arguments;
-    arguments.push_back(format);*/
-
-    //Constant* int_val = ConstantInt::get(i64, reinterpret_cast<uintptr_t>((void*)println), false);
-    //Constant* ptr_val = ConstantExpr::getIntToPtr(int_val, ft->getPointerTo());
-
-    //Function* fn = Function::Create(ft, GlobalValue::LinkageTypes::ExternalLinkage, Twine("println"), module);
-    //fn->setCallingConv(CallingConv::C);
-    //BasicBlock* block = BasicBlock::Create(getctx(), "entry", fn, 0);
-
-    //Function::Create(ft, GlobalValue::LinkageTypes::ExternalLinkage, "println", module);
-
-    /*push(block);
-    CallInst::Create(ptr_val, ArrayRef<Value*>(), "", block);
-    ReturnInst::Create(context, block);
-    pop();*/
-
-    return nullptr;
 }
 
 

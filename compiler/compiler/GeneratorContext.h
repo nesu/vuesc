@@ -20,6 +20,7 @@ class GeneratorBlock
         BasicBlock* block;
         std::map<std::string, AllocaInst*> locals;
         Value* ret;
+
 };
 
 class GeneratorContext
@@ -27,6 +28,8 @@ class GeneratorContext
     std::stack<GeneratorBlock*> block_stack;
     LLVMContext context;
     Function* entry_point;
+
+    //std::map<std::string, 
 
     public:
         Module* module;
@@ -36,7 +39,7 @@ class GeneratorContext
         void generate(Block& root);
 
         llvm::Type* typeof(const Identifier& type);
-        llvm::Value* __stdlib_registry();
+        void __stdlib_registry();
 
         LLVMContext& getctx() {
             return context;

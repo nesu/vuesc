@@ -13,8 +13,6 @@ class Compiler
 
         Compiler(Compiler const&) = delete;
         void operator=(Compiler const&) = delete;
-
-        std::string     input;
 };
 
 #endif // !_COMPILER_H

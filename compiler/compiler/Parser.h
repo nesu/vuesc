@@ -217,18 +217,19 @@ namespace  Vues  {
         TINTEGER = 258,
         TSTRING = 259,
         TIDENTIFIER = 260,
-        TDEF = 261,
+        TFUN = 261,
         TVAR = 262,
-        TRETURN = 263,
-        TLPAREN = 264,
-        TRPAREN = 265,
-        TLBRACE = 266,
-        TRBRACE = 267,
-        TCOMMA = 268,
-        TDOT = 269,
-        TCOLON = 270,
-        TQUOTE = 271,
-        TASSIGN = 272
+        TVAL = 263,
+        TRETURN = 264,
+        TLPAREN = 265,
+        TRPAREN = 266,
+        TLBRACE = 267,
+        TRBRACE = 268,
+        TCOMMA = 269,
+        TDOT = 270,
+        TCOLON = 271,
+        TQUOTE = 272,
+        TASSIGN = 273
       };
     };
 
@@ -682,12 +683,12 @@ namespace  Vues  {
     enum
     {
       yyeof_ = 0,
-      yylast_ = 67,     ///< Last index in yytable_.
-      yynnts_ = 14,  ///< Number of nonterminal symbols.
-      yyfinal_ = 21, ///< Termination state number.
+      yylast_ = 85,     ///< Last index in yytable_.
+      yynnts_ = 18,  ///< Number of nonterminal symbols.
+      yyfinal_ = 27, ///< Termination state number.
       yyterror_ = 1,
       yyerrcode_ = 256,
-      yyntokens_ = 18  ///< Number of tokens.
+      yyntokens_ = 19  ///< Number of tokens.
     };
 
 
@@ -698,7 +699,7 @@ namespace  Vues  {
 
 #line 6 "Parser.y" // lalr1.cc:401
 } //  Vues 
-#line 702 "Parser.h" // lalr1.cc:401
+#line 703 "Parser.h" // lalr1.cc:401
 
 
 

@@ -10,6 +10,8 @@
 #include "Compiler.h"
 #include "GeneratorContext.h"
 #include "Lexer.h"
+#include "Error.h"
+#include "Utility.h"
 
 extern Block* root_block;
 
@@ -17,7 +19,7 @@ int main(int argc, char* argv[])
 {
     Compiler* compiler = Compiler::get();
     cl::opt<std::string> ifn(cl::Positional, cl::Required, cl::desc("<input file>"));
-    cl::opt<std::string> ofn("o", cl::desc("Bitcode output file."), cl::value_desc("output file"));
+    cl::opt<std::string> ofn("o", cl::Required, cl::desc("Bitcode output file."), cl::value_desc("output file"));
     cl::opt<int> parserd("parser-debug-level", cl::desc("Debug level for parser."), cl::value_desc("int"));
     // TODO: Add alias for output argument.
 
@@ -29,7 +31,7 @@ int main(int argc, char* argv[])
     
     std::ifstream input(ifn);
     if (!input.good()) {
-        std::cerr << "Bad input file." << std::endl;
+        COMPILER_ERROR << "Provided file does not exist or is unreadable.";
         exit(EXIT_FAILURE);
     }
 
@@ -43,26 +45,17 @@ int main(int argc, char* argv[])
     int perr = parser->parse();
     if (perr != 0)
     {
-        std::cerr << "Failed to parse file. Parse result: " << perr << std::endl;
+        COMPILER_ERROR << "Failed to parse script. Parse returned " << perr;
         exit(EXIT_FAILURE);
     }
 
+    GeneratorContext context;
+    context.generate(*root_block);
+    auto fd_ostream = make_raw_fd_ostream(ofn.getValue());
+    llvm::WriteBitcodeToFile(*context.module, *fd_ostream);
+
+
     return EXIT_SUCCESS;
-}
-
-
-
-
-std::unique_ptr<llvm::raw_fd_ostream> make_raw_fd_ostream(const std::string &filename)
-{
-    std::string error_string;
-    std::error_code errco;
-    std::unique_ptr<llvm::raw_fd_ostream> raw_out(new llvm::raw_fd_ostream(filename, errco, llvm::sys::fs::F_None));
-    if (errco) {
-        std::cout << errco.message() << std::endl;
-    }
-
-    return raw_out;
 }
 
 /*

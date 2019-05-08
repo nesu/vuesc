@@ -44,15 +44,15 @@
 %token <integer> TINTEGER
 %token <string> TSTRING TIDENTIFIER
 
-%token <token> TDEF TVAR TRETURN
+%token <token> TFUN TVAR TVAL TRETURN
 %token <token> TLPAREN TRPAREN TLBRACE TRBRACE TCOMMA TDOT TCOLON TQUOTE
 
 %type <identifier> identifier
-%type <expression> numeric string_literal expression
-%type <expression_vector> call_args;
+%type <expression> constant expression method_call_expr method_call_arg assignment_expr
+%type <expression_vector> method_call_args;
 %type <variable_vector> method_decl_args;
 %type <block> program statements block
-%type <statement> statement var_decl method_arg_decl method_decl
+%type <statement> statement var_decl val_decl method_arg_decl method_decl return_statement
 
 %left TASSIGN
 
@@ -61,83 +61,102 @@
 %%
 
 program 
-        : /* blank */ { root_block = new Block(); }
-        | statements { root_block = $1; }
+        : /* blank */   { root_block = new Block(); }
+        | statements    { root_block = $1; }
 ;
 
 
 statements 
-        : statement { $$ = new Block(); $$->statements.push_back($<statement>1); }
-        | statements statement { $1->statements.push_back($<statement>2); }
+        : statement                 { $$ = new Block(); $$->statements.push_back($<statement>1); }
+        | statements statement      { $1->statements.push_back($<statement>2); }
 ;
 
 
 statement 
-        : var_decl 
+        : var_decl
+        | val_decl
         | method_decl
         | method_arg_decl
+        | return_statement
         | expression { $$ = new ExpressionStatement(*$1); } 
-        | TRETURN expression { $$ = new ReturnStatement(*$2); }
 ;
 
 
 block 
-        : TLBRACE statements TRBRACE { $$ = $2; }
-        | TLBRACE TRBRACE { $$ = new Block(); }
+        : TLBRACE statements TRBRACE    { $$ = $2; }
+        | TLBRACE TRBRACE               { $$ = new Block(); }
 ;
 
 
+return_statement
+        : TRETURN identifier        { $$ = new ReturnStatement(*$2); }
+        | TRETURN method_call_expr  { $$ = new ReturnStatement(*$2); }
+        | TRETURN constant          { $$ = new ReturnStatement(*$2); }
+        | TRETURN                   { $$ = new BlankReturnStatement(); }
+;
+
 var_decl 
-        : TVAR identifier TCOLON identifier { $$ = new VariableDeclaration(*$2, *$4); }
-        | TVAR identifier TCOLON identifier TASSIGN expression { $$ = new VariableDeclaration(*$2, *$4, $6); }
+        : TVAR identifier TCOLON identifier                     { $$ = new VariableDeclaration(*$2, *$4); }
+        | TVAR identifier TCOLON identifier TASSIGN expression  { $$ = new VariableDeclaration(*$2, *$4, $6); }
+;
+
+val_decl
+        : TVAL identifier TCOLON identifier TASSIGN expression { $$ = new VariableDeclaration(*$2, *$4, $6); }
 ;
 
 
 method_arg_decl
-        : identifier TCOLON identifier { $$ = new VariableDeclaration(*$1, *$3); }
-        | identifier TCOLON identifier TASSIGN expression { $$ = new VariableDeclaration(*$1, *$3, $5); }
+        : identifier TCOLON identifier                      { $$ = new VariableDeclaration(*$1, *$3); }
+        | identifier TCOLON identifier TASSIGN expression   { $$ = new VariableDeclaration(*$1, *$3, $5); }
 ;
 
 
 method_decl 
-        : TDEF identifier TLPAREN method_decl_args TRPAREN TCOLON identifier block { $$ = new MethodDeclaration(*$2, *$4, *$7, *$8); }
+        : TFUN identifier TLPAREN method_decl_args TRPAREN block                    { $$ = new MethodDeclaration(*$2, *$4, *$6); }
+        | TFUN identifier TLPAREN method_decl_args TRPAREN TCOLON identifier block  { $$ = new MethodDeclaration(*$2, *$4, *$7, *$8); }
 ;
 
 method_decl_args 
-        : /*blank*/ { $$ = new std::vector<VariableDeclaration*>(); }
-        | method_arg_decl { $$ = new std::vector<VariableDeclaration*>(); $$->push_back($<method_arg_decl>1); }
-        | method_decl_args TCOMMA method_arg_decl { $1->push_back($<method_arg_decl>3); }
+        :                                           { $$ = new std::vector<VariableDeclaration*>(); }
+        | method_arg_decl                           { $$ = new std::vector<VariableDeclaration*>(); $$->push_back($<method_arg_decl>1); }
+        | method_decl_args TCOMMA method_arg_decl   { $1->push_back($<method_arg_decl>3); }
 ;
 
+method_call_expr
+        : identifier TLPAREN method_call_args TRPAREN { $$ = new MethodCall(*$1, *$3); }
+;
+
+assignment_expr
+        : identifier TASSIGN expression { $$ = new Assignment(*$<identifier>1, *$3); }
+;
 
 expression 
-        : identifier TASSIGN expression { $$ = new Assignment(*$<identifier>1, *$3); }
-        | identifier TLPAREN call_args TRPAREN { $$ = new MethodCall(*$1, *$3); delete $3; }
+        : method_call_expr
+        | assignment_expr
         | identifier { $<identifier>$ = $1; }
-        | numeric
-        | string_literal
+        | constant
 ;
 
 
 identifier 
-        : TIDENTIFIER { $$ = new Identifier(*$1); delete $1; }
+        : TIDENTIFIER { $$ = new Identifier(*$1); }
 ;
 
-
-numeric 
-        : TINTEGER { $$ = new Integer($1); }
+constant
+        : TINTEGER  { $$ = new Integer($1); }
+        | TSTRING   { $$ = new String(*$1); }
 ;
 
-
-string_literal 
-        : TSTRING { $$ = new String(*$1); delete $1; }
+method_call_arg
+        : identifier        { $<identifier>$ = $1; }
+        | method_call_expr
+        | constant
 ;
-
            
-call_args 
-        : /*blank*/ { $$ = new std::vector<Expression*>(); }
-        | expression { $$ = new std::vector<Expression*>(); $$->push_back($1); }
-        | call_args TCOMMA expression { $1->push_back($3); }
+method_call_args 
+        :                                               { $$ = new std::vector<Expression*>(); }
+        | method_call_arg                               { $$ = new std::vector<Expression*>(); $$->push_back($1); }
+        | method_call_args TCOMMA method_call_arg       { $1->push_back($3); }
 ;
 
 
