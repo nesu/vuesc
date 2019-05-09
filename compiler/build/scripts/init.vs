@@ -1,8 +1,4 @@
-fun ation()
+fun atkl(): Bool
 {
-	val simple: string = "AAAA"
-	printf("%s\n", simple)
-	return
+	return true
 }
-
-ation()

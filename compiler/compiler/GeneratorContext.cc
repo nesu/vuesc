@@ -1,4 +1,5 @@
 #include <iostream>
+#include <algorithm>
 
 #include "llvm/IR/IRPrintingPasses.h"
 #include "llvm/IR/PassManager.h"
@@ -31,11 +32,20 @@ GeneratorContext::GeneratorContext()
 
 llvm::Type* GeneratorContext::typeof(const Identifier& type)
 {
-    if (type.named == "int") { 
+    std::string typen = type.named;
+
+    std::transform(typen.begin(), typen.end(), typen.begin(), ::tolower);
+
+    if (typen == "int") {
         return i64;
     }
-    if (type.named == "string") {
+
+    if (typen  == "string") {
         return i8_ptr;
+    }
+
+    if (typen == "bool" || typen == "boolean") {
+        return i1;
     }
 
     return void_;

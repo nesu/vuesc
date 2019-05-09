@@ -41,20 +41,28 @@
     std::vector<VariableDeclaration*> *variable_vector;
 }
 
-%token <integer> TINTEGER
+%token <string> TINTEGER
 %token <string> TSTRING TIDENTIFIER
 
-%token <token> TFUN TVAR TVAL TRETURN
+%token <token> TFUN TVAR TVAL TRETURN TRETURN_VOID TIF TELSE
 %token <token> TLPAREN TRPAREN TLBRACE TRBRACE TCOMMA TDOT TCOLON TQUOTE
+%token <token> T_AND T_OR T_EQUAL 
+%token <token> T_NOT_EQUAL T_GREATER_OR_EQUAL T_LESS_OR_EQUAL T_GREATER T_LESS 
+%token <token> T_ADD T_SUB T_MUL T_DIV
+%token <token> T_TRUE T_FALSE
 
 %type <identifier> identifier
-%type <expression> constant expression method_call_expr method_call_arg assignment_expr
+%type <expression> constant expression method_call_expr assignment_expr
 %type <expression_vector> method_call_args;
 %type <variable_vector> method_decl_args;
 %type <block> program statements block
-%type <statement> statement return var_decl val_decl method_arg_decl method_decl
+%type <statement> statement var_decl val_decl method_arg_decl method_decl conditional
 
 %left TASSIGN
+%left T_ADD T_SUB
+%left T_MUL T_DIV
+%left T_AND T_OR
+%left T_NOT_EQUAL T_GREATER_OR_EQUAL T_LESS_OR_EQUAL T_GREATER T_LESS T_EQUAL
 
 %start program
 
@@ -72,13 +80,18 @@ statements
 ;
 
 
-statement 
-        : var_decl
+statement
+        : conditional
+        | var_decl
         | val_decl
         | method_decl
         | method_arg_decl
-        | expression { $$ = new ExpressionStatement(*$1); } 
-        | return
+        | expression 
+            { $$ = new ExpressionStatement(*$1); } 
+        | TRETURN expression
+            { $$ = new ReturnStatement(*$2); }
+        | TRETURN_VOID
+            { $$ = new BlankReturnStatement(); }
 ;
 
 
@@ -88,11 +101,9 @@ block
 ;
 
 
-return
-        : TRETURN                   { $$ = new BlankReturnStatement(); }
-        | TRETURN identifier        { $$ = new ReturnStatement(*$2); }
-        | TRETURN method_call_expr  { $$ = new ReturnStatement(*$2); }
-        | TRETURN constant          { $$ = new ReturnStatement(*$2); }
+conditional
+        : TIF TLPAREN expression TRPAREN TLBRACE block TRBRACE                              { $$ = NULL; }
+        | TIF TLPAREN expression TRPAREN TLBRACE block TRBRACE TELSE TLBRACE block TRBRACE  { $$ = NULL; }
 ;
 
 var_decl 
@@ -134,29 +145,26 @@ expression
         : method_call_expr
         | assignment_expr
         | identifier { $<identifier>$ = $1; }
+        | expression T_EQUAL expression 
+            { $$ = new Comparison($1, $3, $2); }
         | constant
 ;
-
 
 identifier 
         : TIDENTIFIER { $$ = new Identifier(*$1); }
 ;
 
 constant
-        : TINTEGER  { $$ = new Integer($1); }
+        : TINTEGER  { $$ = new Integer(atol($1->c_str())); }
         | TSTRING   { $$ = new String(*$1); }
+        | T_TRUE    { $$ = new Boolean(true); }
+        | T_FALSE   { $$ = new Boolean(false); }
 ;
 
-method_call_arg
-        : identifier        { $<identifier>$ = $1; }
-        | method_call_expr
-        | constant
-;
-           
 method_call_args 
         :                                               { $$ = new std::vector<Expression*>(); }
-        | method_call_arg                               { $$ = new std::vector<Expression*>(); $$->push_back($1); }
-        | method_call_args TCOMMA method_call_arg       { $1->push_back($3); }
+        | expression                                    { $$ = new std::vector<Expression*>(); $$->push_back($1); }
+        | method_call_args TCOMMA expression            { $1->push_back($3); }
 ;
 
 

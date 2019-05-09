@@ -4,8 +4,6 @@
 #include <vector>
 #include "llvm/IR/Value.h"
 
-
-
 class GeneratorContext;
 class Node
 {
@@ -54,12 +52,25 @@ class Identifier : public Expression
         virtual llvm::Value* generator(GeneratorContext& context);
 };
 
+#include <iostream>
 
 class Integer : public Expression
 {
     public:
         long long value;
-        Integer(long long value) : value(value) {}
+        Integer(long long value) : value(value) {
+            std::cout << "Integer constructor value " << value << std::endl;
+        }
+
+        virtual llvm::Value* generator(GeneratorContext& context);
+};
+
+
+class Boolean : public Expression
+{
+    public:
+        bool value;
+        Boolean(bool value) : value(value) {}
         virtual llvm::Value* generator(GeneratorContext& context);
 };
 
@@ -101,6 +112,28 @@ class Block : public Expression
 
         virtual llvm::Value* generator(GeneratorContext& context);
 };
+
+
+class Comparison : public Expression
+{
+    public:
+        Expression* left;
+        Expression* right;
+        int comparison_operator;
+
+        Comparison(Expression* left, Expression* right, int comparison_operator)
+            : left(left), right(right), comparison_operator(comparison_operator) {}
+
+        virtual llvm::Value* generator(GeneratorContext& context);
+};
+
+/*
+class Conditional : public Statement
+{
+    Expression* eval;
+    Expression* successful;
+    Expression* fallback;
+};*/
 
 
 class VariableDeclaration : public Statement

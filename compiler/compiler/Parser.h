@@ -221,15 +221,32 @@ namespace  Vues  {
         TVAR = 262,
         TVAL = 263,
         TRETURN = 264,
-        TLPAREN = 265,
-        TRPAREN = 266,
-        TLBRACE = 267,
-        TRBRACE = 268,
-        TCOMMA = 269,
-        TDOT = 270,
-        TCOLON = 271,
-        TQUOTE = 272,
-        TASSIGN = 273
+        TRETURN_VOID = 265,
+        TIF = 266,
+        TELSE = 267,
+        TLPAREN = 268,
+        TRPAREN = 269,
+        TLBRACE = 270,
+        TRBRACE = 271,
+        TCOMMA = 272,
+        TDOT = 273,
+        TCOLON = 274,
+        TQUOTE = 275,
+        T_AND = 276,
+        T_OR = 277,
+        T_EQUAL = 278,
+        T_NOT_EQUAL = 279,
+        T_GREATER_OR_EQUAL = 280,
+        T_LESS_OR_EQUAL = 281,
+        T_GREATER = 282,
+        T_LESS = 283,
+        T_ADD = 284,
+        T_SUB = 285,
+        T_MUL = 286,
+        T_DIV = 287,
+        T_TRUE = 288,
+        T_FALSE = 289,
+        TASSIGN = 290
       };
     };
 
@@ -683,12 +700,12 @@ namespace  Vues  {
     enum
     {
       yyeof_ = 0,
-      yylast_ = 85,     ///< Last index in yytable_.
-      yynnts_ = 18,  ///< Number of nonterminal symbols.
-      yyfinal_ = 27, ///< Termination state number.
+      yylast_ = 116,     ///< Last index in yytable_.
+      yynnts_ = 17,  ///< Number of nonterminal symbols.
+      yyfinal_ = 31, ///< Termination state number.
       yyterror_ = 1,
       yyerrcode_ = 256,
-      yyntokens_ = 19  ///< Number of tokens.
+      yyntokens_ = 36  ///< Number of tokens.
     };
 
 
@@ -699,7 +716,7 @@ namespace  Vues  {
 
 #line 6 "Parser.y" // lalr1.cc:401
 } //  Vues 
-#line 703 "Parser.h" // lalr1.cc:401
+#line 720 "Parser.h" // lalr1.cc:401
 
 
 

@@ -4,12 +4,19 @@
 
 #include "llvm/Support/Debug.h"
 
+#include "Parser.h"
 #include "GeneratorContext.h"
 #include "Error.h"
 
 Value* Integer::generator(GeneratorContext& context)
 {
+    LLVM_DEBUG(dbgs() << "Creating constant int with value of " << value << "\n");
     return llvm::ConstantInt::get(context.i64, value, true);
+}
+
+Value* Boolean::generator(GeneratorContext& context)
+{
+    return llvm::ConstantInt::get(context.i1, value ? 1 : 0, false);
 }
 
 Value* String::generator(GeneratorContext& context)
@@ -58,10 +65,26 @@ Value* Assignment::generator(GeneratorContext& context)
     }
 
     BlockLocal* local = context.locals()->get(left.named);
-    if (value->getType() != local->instr->getType()->getElementType())
+    Type* vty = local->instr->getType()->getElementType();
+    if (value->getType() != vty)
     {
-        SCRIPT_ERROR << "Assigning incompatible type for variable " << left.named;
-        return nullptr;
+        if (value->getType()->isIntegerTy() && vty->isIntegerTy())
+        {
+            LLVM_DEBUG(dbgs() << "Attempting to cast integer type.");
+            if (value->getType()->getPrimitiveSizeInBits() > vty->getPrimitiveSizeInBits())
+            {
+                SCRIPT_ERROR << "Cannot cast value of bigger integer to smaller.";
+                return nullptr;
+            }
+
+            value = CastInst::Create(Instruction::CastOps::ZExt, value, context.i64, "result", context.current_block()->block);
+            value->getType()->dump();
+        }
+        else
+        {
+            SCRIPT_ERROR << "Assigning incompatible type for variable " << left.named;
+            return nullptr;
+        }
     }
 
     if (local->immutable && local->assigned)
@@ -82,6 +105,50 @@ Value* Block::generator(GeneratorContext& context)
     }
 
     return last;
+}
+
+
+Value* Comparison::generator(GeneratorContext& context)
+{
+    Value* vl = right->generator(context);
+    Value* vr = right->generator(context);
+
+    if (vl->getType() != vr->getType())
+    {
+        SCRIPT_ERROR << "Cannot compare two different types.";
+        return nullptr;
+    }
+
+    // TODO: Add support for (double/float) == integer
+    using Token = Vues::Parser::token::yytokentype;
+    CmpInst::Predicate predicate = CmpInst::Predicate::BAD_ICMP_PREDICATE;
+    switch (comparison_operator)
+    {
+        case Token::T_EQUAL:
+            predicate = CmpInst::Predicate::ICMP_EQ;
+            break;
+        case Token::T_NOT_EQUAL:
+            predicate = CmpInst::Predicate::ICMP_NE;
+            break;
+        case Token::T_GREATER_OR_EQUAL:
+            predicate = CmpInst::Predicate::ICMP_SGE;
+            break;
+        case Token::T_LESS_OR_EQUAL:
+            predicate = CmpInst::Predicate::ICMP_SLE;
+            break;
+        case Token::T_GREATER:
+            predicate = CmpInst::Predicate::ICMP_SGT;
+            break;
+        case Token::T_LESS:
+            predicate = CmpInst::Predicate::ICMP_SLT;
+            break;
+        default:
+            // This section should not be reached at all.
+            COMPILER_ERROR << "Unknown comparison operator.";
+            return nullptr;
+    }
+
+    return CmpInst::Create(Instruction::ICmp, predicate, vl, vr, "result", context.current_block()->block);
 }
 
 

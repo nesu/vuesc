@@ -24,7 +24,10 @@
 "var"                               return TOKEN(Token::TVAR);
 "val"                               return TOKEN(Token::TVAL);
 "fun"                               return TOKEN(Token::TFUN);
+"return;"                           return TOKEN(Token::TRETURN_VOID);
 "return"                            return TOKEN(Token::TRETURN);
+"if"                                return TOKEN(Token::TIF);
+"else"                              return TOKEN(Token::TELSE);
 
 
 \"                                  BEGIN(STRING_LITERAL);
@@ -66,6 +69,22 @@
 "."                                 return TOKEN(Token::TDOT);
 ","                                 return TOKEN(Token::TCOMMA);
 ":"                                 return TOKEN(Token::TCOLON);
+
+"&&"                                return TOKEN(Token::T_AND);
+"||"                                return TOKEN(Token::T_OR);
+"=="                                return TOKEN(Token::T_EQUAL);
+"!="                                return TOKEN(Token::T_NOT_EQUAL);
+">="                                return TOKEN(Token::T_GREATER_OR_EQUAL);
+"<="                                return TOKEN(Token::T_LESS_OR_EQUAL);
+">"                                 return TOKEN(Token::T_GREATER);
+"<"                                 return TOKEN(Token::T_LESS);
+"+"                                 return TOKEN(Token::T_ADD);
+"-"                                 return TOKEN(Token::T_SUB);
+"*"                                 return TOKEN(Token::T_MUL);
+"/"                                 return TOKEN(Token::T_DIV);
+
+"true"                              return Token::T_TRUE;
+"false"                             return Token::T_FALSE;
 
 [a-zA-Z_][a-zA-Z0-9_]*              SAVE_TOKEN; return Token::TIDENTIFIER;
 .                                   printf("Syntax error: unknown token.\n"); yyterminate();
