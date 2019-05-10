@@ -102,8 +102,10 @@ block
 
 
 conditional
-        : TIF TLPAREN expression TRPAREN TLBRACE block TRBRACE                              { $$ = NULL; }
-        | TIF TLPAREN expression TRPAREN TLBRACE block TRBRACE TELSE TLBRACE block TRBRACE  { $$ = NULL; }
+        : TIF TLPAREN expression TRPAREN block                              
+            { $$ = new Conditional($3, $5); }
+        | TIF TLPAREN expression TRPAREN block TELSE block  
+            { $$ = new Conditional($3, $5, $7); }
 ;
 
 var_decl 

@@ -8,7 +8,8 @@ struct ErrorHandling
     enum 
     {
         COMPILER = 0x0001,
-        SCRIPT = 0x0002
+        SCRIPT = 0x0002,
+        SCRIPT_WARNING = 0x0003
     };
 
     const int flags;

@@ -2,13 +2,13 @@
 #include <algorithm>
 
 #include "llvm/IR/IRPrintingPasses.h"
+#include "llvm/IR/IRBuilder.h"
 #include "llvm/IR/PassManager.h"
 #include "llvm/IR/Verifier.h"
 #include "llvm/Transforms/IPO/PassManagerBuilder.h"
 #include "llvm/ExecutionEngine/ExecutionEngine.h"
 #include "llvm/Support/TargetSelect.h"
 
-#include "Compiler.h"
 #include "GeneratorContext.h"
 #include "Builtin.h"
 
@@ -52,7 +52,7 @@ llvm::Type* GeneratorContext::typeof(const Identifier& type)
 }
 
 
-void GeneratorContext::__stdlib_registry()
+void GeneratorContext::internal_methods()
 {
     std::vector<Type*> argument_type_vec;
     argument_type_vec.push_back(i8_ptr);
@@ -69,14 +69,14 @@ void GeneratorContext::generate(Block& root)
     std::vector<Type*> arg_type_vec;
     FunctionType* ft = FunctionType::get(void_, makeArrayRef(arg_type_vec), false);
     entry_point = Function::Create(ft, GlobalValue::ExternalLinkage, "main", module);
-    BasicBlock* entry_block = BasicBlock::Create(this->getctx(), "entry", entry_point, 0);
+    BasicBlock* entry_block = BasicBlock::Create(this->llvmc(), "entry", entry_point, 0);
+    internal_methods();
 
-    __stdlib_registry();
 
     this->push(entry_block);
     root.generator(*this);
     if (current_block()->block->getTerminator() == nullptr) {
-        ReturnInst::Create(this->getctx(), 0, current_block()->block);
+        ReturnInst::Create(this->llvmc(), 0, current_block()->block);
     }
 
     this->pop();

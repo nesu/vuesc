@@ -700,7 +700,7 @@ namespace  Vues  {
     enum
     {
       yyeof_ = 0,
-      yylast_ = 116,     ///< Last index in yytable_.
+      yylast_ = 115,     ///< Last index in yytable_.
       yynnts_ = 17,  ///< Number of nonterminal symbols.
       yyfinal_ = 31, ///< Termination state number.
       yyterror_ = 1,

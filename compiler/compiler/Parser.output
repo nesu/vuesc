@@ -37,8 +37,8 @@ Grammar
    13 block: TLBRACE statements TRBRACE
    14      | TLBRACE TRBRACE
 
-   15 conditional: TIF TLPAREN expression TRPAREN TLBRACE block TRBRACE
-   16            | TIF TLPAREN expression TRPAREN TLBRACE block TRBRACE TELSE TLBRACE block TRBRACE
+   15 conditional: TIF TLPAREN expression TRPAREN block
+   16            | TIF TLPAREN expression TRPAREN block TELSE block
 
    17 var_decl: TVAR identifier TCOLON identifier
    18         | TVAR identifier TCOLON identifier TASSIGN expression
@@ -93,8 +93,8 @@ TIF <token> (266) 15 16
 TELSE <token> (267) 16
 TLPAREN <token> (268) 15 16 22 23 27
 TRPAREN <token> (269) 15 16 22 23 27
-TLBRACE <token> (270) 13 14 15 16
-TRBRACE <token> (271) 13 14 15 16
+TLBRACE <token> (270) 13 14
+TRBRACE <token> (271) 13 14
 TCOMMA <token> (272) 26 41
 TDOT <token> (273)
 TCOLON <token> (274) 17 18 19 20 21 23
@@ -264,8 +264,8 @@ State 8
 
 State 9
 
-   15 conditional: TIF . TLPAREN expression TRPAREN TLBRACE block TRBRACE
-   16            | TIF . TLPAREN expression TRPAREN TLBRACE block TRBRACE TELSE TLBRACE block TRBRACE
+   15 conditional: TIF . TLPAREN expression TRPAREN block
+   16            | TIF . TLPAREN expression TRPAREN block TELSE block
 
     TLPAREN  shift, and go to state 30
 
@@ -458,8 +458,8 @@ State 29
 
 State 30
 
-   15 conditional: TIF TLPAREN . expression TRPAREN TLBRACE block TRBRACE
-   16            | TIF TLPAREN . expression TRPAREN TLBRACE block TRBRACE TELSE TLBRACE block TRBRACE
+   15 conditional: TIF TLPAREN . expression TRPAREN block
+   16            | TIF TLPAREN . expression TRPAREN block TELSE block
 
     TINTEGER     shift, and go to state 1
     TSTRING      shift, and go to state 2
@@ -587,8 +587,8 @@ State 39
 
 State 40
 
-   15 conditional: TIF TLPAREN expression . TRPAREN TLBRACE block TRBRACE
-   16            | TIF TLPAREN expression . TRPAREN TLBRACE block TRBRACE TELSE TLBRACE block TRBRACE
+   15 conditional: TIF TLPAREN expression . TRPAREN block
+   16            | TIF TLPAREN expression . TRPAREN block TELSE block
    32 expression: expression . T_EQUAL expression
 
     TRPAREN  shift, and go to state 51
@@ -686,10 +686,12 @@ State 50
 
 State 51
 
-   15 conditional: TIF TLPAREN expression TRPAREN . TLBRACE block TRBRACE
-   16            | TIF TLPAREN expression TRPAREN . TLBRACE block TRBRACE TELSE TLBRACE block TRBRACE
+   15 conditional: TIF TLPAREN expression TRPAREN . block
+   16            | TIF TLPAREN expression TRPAREN . block TELSE block
 
     TLBRACE  shift, and go to state 59
+
+    block  go to state 60
 
 
 State 52
@@ -711,7 +713,7 @@ State 53
 
     method_call_expr  go to state 20
     assignment_expr   go to state 21
-    expression        go to state 60
+    expression        go to state 61
     identifier        go to state 29
     constant          go to state 24
 
@@ -728,7 +730,7 @@ State 54
 
     method_call_expr  go to state 20
     assignment_expr   go to state 21
-    expression        go to state 61
+    expression        go to state 62
     identifier        go to state 29
     constant          go to state 24
 
@@ -738,7 +740,7 @@ State 55
    22 method_decl: TFUN identifier TLPAREN method_decl_args TRPAREN . block
    23            | TFUN identifier TLPAREN method_decl_args TRPAREN . TCOLON identifier block
 
-    TLBRACE  shift, and go to state 62
+    TLBRACE  shift, and go to state 59
     TCOLON   shift, and go to state 63
 
     block  go to state 64
@@ -790,36 +792,6 @@ State 58
 
 State 59
 
-   15 conditional: TIF TLPAREN expression TRPAREN TLBRACE . block TRBRACE
-   16            | TIF TLPAREN expression TRPAREN TLBRACE . block TRBRACE TELSE TLBRACE block TRBRACE
-
-    TLBRACE  shift, and go to state 62
-
-    block  go to state 68
-
-
-State 60
-
-   32 expression: expression . T_EQUAL expression
-   41 method_call_args: method_call_args TCOMMA expression .
-
-    T_EQUAL  shift, and go to state 33
-
-    $default  reduce using rule 41 (method_call_args)
-
-
-State 61
-
-   21 method_arg_decl: identifier TCOLON identifier TASSIGN expression .
-   32 expression: expression . T_EQUAL expression
-
-    T_EQUAL  shift, and go to state 33
-
-    $default  reduce using rule 21 (method_arg_decl)
-
-
-State 62
-
    13 block: TLBRACE . statements TRBRACE
    14      | TLBRACE . TRBRACE
 
@@ -832,11 +804,11 @@ State 62
     TRETURN       shift, and go to state 7
     TRETURN_VOID  shift, and go to state 8
     TIF           shift, and go to state 9
-    TRBRACE       shift, and go to state 69
+    TRBRACE       shift, and go to state 68
     T_TRUE        shift, and go to state 10
     T_FALSE       shift, and go to state 11
 
-    statements        go to state 70
+    statements        go to state 69
     statement         go to state 14
     conditional       go to state 15
     var_decl          go to state 16
@@ -848,6 +820,36 @@ State 62
     expression        go to state 22
     identifier        go to state 23
     constant          go to state 24
+
+
+State 60
+
+   15 conditional: TIF TLPAREN expression TRPAREN block .
+   16            | TIF TLPAREN expression TRPAREN block . TELSE block
+
+    TELSE  shift, and go to state 70
+
+    $default  reduce using rule 15 (conditional)
+
+
+State 61
+
+   32 expression: expression . T_EQUAL expression
+   41 method_call_args: method_call_args TCOMMA expression .
+
+    T_EQUAL  shift, and go to state 33
+
+    $default  reduce using rule 41 (method_call_args)
+
+
+State 62
+
+   21 method_arg_decl: identifier TCOLON identifier TASSIGN expression .
+   32 expression: expression . T_EQUAL expression
+
+    T_EQUAL  shift, and go to state 33
+
+    $default  reduce using rule 21 (method_arg_decl)
 
 
 State 63
@@ -895,20 +897,12 @@ State 67
 
 State 68
 
-   15 conditional: TIF TLPAREN expression TRPAREN TLBRACE block . TRBRACE
-   16            | TIF TLPAREN expression TRPAREN TLBRACE block . TRBRACE TELSE TLBRACE block TRBRACE
-
-    TRBRACE  shift, and go to state 72
-
-
-State 69
-
    14 block: TLBRACE TRBRACE .
 
     $default  reduce using rule 14 (block)
 
 
-State 70
+State 69
 
     4 statements: statements . statement
    13 block: TLBRACE statements . TRBRACE
@@ -922,7 +916,7 @@ State 70
     TRETURN       shift, and go to state 7
     TRETURN_VOID  shift, and go to state 8
     TIF           shift, and go to state 9
-    TRBRACE       shift, and go to state 73
+    TRBRACE       shift, and go to state 72
     T_TRUE        shift, and go to state 10
     T_FALSE       shift, and go to state 11
 
@@ -939,30 +933,36 @@ State 70
     constant          go to state 24
 
 
+State 70
+
+   16 conditional: TIF TLPAREN expression TRPAREN block TELSE . block
+
+    TLBRACE  shift, and go to state 59
+
+    block  go to state 73
+
+
 State 71
 
    23 method_decl: TFUN identifier TLPAREN method_decl_args TRPAREN TCOLON identifier . block
 
-    TLBRACE  shift, and go to state 62
+    TLBRACE  shift, and go to state 59
 
     block  go to state 74
 
 
 State 72
 
-   15 conditional: TIF TLPAREN expression TRPAREN TLBRACE block TRBRACE .
-   16            | TIF TLPAREN expression TRPAREN TLBRACE block TRBRACE . TELSE TLBRACE block TRBRACE
+   13 block: TLBRACE statements TRBRACE .
 
-    TELSE  shift, and go to state 75
-
-    $default  reduce using rule 15 (conditional)
+    $default  reduce using rule 13 (block)
 
 
 State 73
 
-   13 block: TLBRACE statements TRBRACE .
+   16 conditional: TIF TLPAREN expression TRPAREN block TELSE block .
 
-    $default  reduce using rule 13 (block)
+    $default  reduce using rule 16 (conditional)
 
 
 State 74
@@ -970,33 +970,3 @@ State 74
    23 method_decl: TFUN identifier TLPAREN method_decl_args TRPAREN TCOLON identifier block .
 
     $default  reduce using rule 23 (method_decl)
-
-
-State 75
-
-   16 conditional: TIF TLPAREN expression TRPAREN TLBRACE block TRBRACE TELSE . TLBRACE block TRBRACE
-
-    TLBRACE  shift, and go to state 76
-
-
-State 76
-
-   16 conditional: TIF TLPAREN expression TRPAREN TLBRACE block TRBRACE TELSE TLBRACE . block TRBRACE
-
-    TLBRACE  shift, and go to state 62
-
-    block  go to state 77
-
-
-State 77
-
-   16 conditional: TIF TLPAREN expression TRPAREN TLBRACE block TRBRACE TELSE TLBRACE block . TRBRACE
-
-    TRBRACE  shift, and go to state 78
-
-
-State 78
-
-   16 conditional: TIF TLPAREN expression TRPAREN TLBRACE block TRBRACE TELSE TLBRACE block TRBRACE .
-
-    $default  reduce using rule 16 (conditional)
