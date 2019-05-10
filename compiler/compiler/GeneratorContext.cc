@@ -14,7 +14,6 @@
 
 
 GeneratorContext::GeneratorContext()
-    : Builder(context)
 {
     llvm::InitializeNativeTarget();
     llvm::InitializeNativeTargetAsmPrinter();

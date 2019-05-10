@@ -1,6 +1,6 @@
 fun art()
 {
-	
+	printf("AAAAAAAAA")
 	val sk: int = 7
 
 	if (sk == 5)

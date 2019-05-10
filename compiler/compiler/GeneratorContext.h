@@ -39,10 +39,6 @@ class GeneratorContext
         Module* module;
         llvm::Type* i1, *i8, *i8_ptr, *i32, *i64, *void_, *double_;
 
-        IRBuilder<> Builder;
-        
-
-
         void generate(Block& root);
         llvm::Type* typeof(const Identifier& type);
         void internal_methods();
