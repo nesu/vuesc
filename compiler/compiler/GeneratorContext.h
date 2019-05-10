@@ -40,8 +40,8 @@ class GeneratorContext
         llvm::Type* i1, *i8, *i8_ptr, *i32, *i64, *void_, *double_;
 
         GeneratorContext();
-        void generate(Block& root);
 
+        void generate(Block& root);
         llvm::Type* typeof(const Identifier& type);
         void __stdlib_registry();
 
