@@ -21,15 +21,15 @@ Value* Boolean::generator(GeneratorContext& context)
 
 Value* String::generator(GeneratorContext& context)
 {
-    ArrayType* at = ArrayType::get(IntegerType::get(context.getctx(), 8), value.size() + 1);
+    ArrayType* at = ArrayType::get(IntegerType::get(context.llvmc(), 8), value.size() + 1);
     GlobalVariable* var = new GlobalVariable(*context.module, at, true, GlobalValue::PrivateLinkage, 0, ".str");
     var->setAlignment(1);
 
-    Constant* const_astr = ConstantDataArray::getString(context.getctx(), value);
+    Constant* const_astr = ConstantDataArray::getString(context.llvmc(), value);
     var->setInitializer(const_astr);
 
     std::vector<Constant*> ptr_vec;
-    ConstantInt* cint = ConstantInt::get(context.getctx(), APInt(64, StringRef("0"), 10));
+    ConstantInt* cint = ConstantInt::get(context.llvmc(), APInt(64, StringRef("0"), 10));
     ptr_vec.push_back(cint);
     ptr_vec.push_back(cint);
 
@@ -110,7 +110,7 @@ Value* Block::generator(GeneratorContext& context)
 
 Value* Comparison::generator(GeneratorContext& context)
 {
-    Value* vl = right->generator(context);
+    Value* vl = left->generator(context);
     Value* vr = right->generator(context);
 
     if (vl->getType() != vr->getType())
@@ -152,11 +152,73 @@ Value* Comparison::generator(GeneratorContext& context)
 }
 
 
+Value* Conditional::generator(GeneratorContext& context)
+{
+    Value* value = comparison->generator(context);
+    if (!value) {
+        COMPILER_ERROR << "Comparison returned nullptr.";
+    }
+
+    Function* F = context.current_block()->block->getParent();
+
+    BasicBlock* if_then = BasicBlock::Create(context.llvmc(), "if.then", F);
+    BasicBlock* if_cont = BasicBlock::Create(context.llvmc(), "if.cont");
+    BasicBlock* if_else = if_cont;
+
+    if (else_block) {
+        if_else = BasicBlock::Create(context.llvmc(), "if.else");
+    }
+
+    BranchInst::Create(if_then, if_else, value, context.current_block()->block);
+    
+    //
+    // IF.THEN BLOCK
+    //
+    context.push(if_then);
+    Value* if_then_v = then_block->generator(context);
+    if (!if_then_v) {
+        COMPILER_ERROR << "nullptr in if_then_v";
+    }
+
+    if_then = context.current_block()->block;
+    BranchInst::Create(if_cont, if_then);
+    context.pop();
+
+    // 
+    // IF.THEN BLOCK
+    //
+    if (else_block)
+    {
+        F->getBasicBlockList().push_back(if_else);
+        context.push(if_else);
+        Value * if_else_v = else_block->generator(context);
+        if (!if_else_v) {
+            COMPILER_ERROR << "nullptr in if_else_v";
+        }
+
+        if_else = context.current_block()->block;
+        BranchInst::Create(if_cont, if_else);
+        context.pop();
+    }
+
+    //
+    // IF.CONT BLOCK
+    //
+    F->getBasicBlockList().push_back(if_cont);
+    context.current_block()->block = if_cont;
+    //context.push(if_cont);
+
+    return if_cont;
+}
+
+
+
 Value* ExpressionStatement::generator(GeneratorContext&  context)
 {
     context.current_block()->ret = expression.generator(context);
     return context.current_block()->ret;
 }
+
 
 
 Value* VariableDeclaration::generator(GeneratorContext& context)
@@ -226,7 +288,7 @@ Value* MethodDeclaration::generator(GeneratorContext& context)
     llvm::FunctionType* ft = FunctionType::get(context.typeof(type), makeArrayRef(method_decl_args), false);
     //
     Function* func = Function::Create(ft, GlobalValue::ExternalLinkage, identifier.named.c_str(), context.module);
-    BasicBlock* block = BasicBlock::Create(context.getctx(), "entry", func, 0);
+    BasicBlock* block = BasicBlock::Create(context.llvmc(), "entry", func, 0);
     context.push(block);
 
     Function::arg_iterator rarguments = func->arg_begin();
@@ -253,7 +315,7 @@ Value* MethodDeclaration::generator(GeneratorContext& context)
         return nullptr;
     }
 
-    ReturnInst::Create(context.getctx(), context.current_block()->ret, block);
+    ReturnInst::Create(context.llvmc(), context.current_block()->ret, context.current_block()->block);
     context.pop();
 
     // Validation?

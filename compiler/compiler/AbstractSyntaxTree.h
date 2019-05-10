@@ -127,13 +127,19 @@ class Comparison : public Expression
         virtual llvm::Value* generator(GeneratorContext& context);
 };
 
-/*
+
 class Conditional : public Statement
 {
-    Expression* eval;
-    Expression* successful;
-    Expression* fallback;
-};*/
+    public:
+        Comparison* comparison;
+        Expression* then_block;
+        Expression* else_block;
+
+        Conditional(Expression* comparison, Expression* successful, Expression* fallback = nullptr)
+            : comparison((Comparison*) comparison), then_block(successful), else_block(fallback) {}
+
+        virtual llvm::Value* generator(GeneratorContext& context);
+};
 
 
 class VariableDeclaration : public Statement

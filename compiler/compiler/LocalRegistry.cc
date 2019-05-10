@@ -24,12 +24,5 @@ BlockLocal * LocalRegistry::create(std::string named, AllocaInst * instr, bool i
     locl.assigned = assigned;
 
     _registry.insert(std::make_pair(named, locl));
-    
-    BlockLocal* _local = get(named);
-    assert(_local != nullptr);
-    assert(_local->instr == instr);
-    assert(_local->immutable == immutable);
-    assert(_local->assigned == assigned);
-
-    return _local;
+    return get(named);
 }

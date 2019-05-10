@@ -29,23 +29,25 @@ class GeneratorBlock
 
 class GeneratorContext
 {
-    std::stack<GeneratorBlock*> block_stack;
     LLVMContext context;
     Function* entry_point;
-
-    //std::map<std::string, 
+    std::stack<GeneratorBlock*> block_stack;
 
     public:
+        GeneratorContext();
+
         Module* module;
         llvm::Type* i1, *i8, *i8_ptr, *i32, *i64, *void_, *double_;
 
-        GeneratorContext();
+        IRBuilder<> Builder;
+        
+
 
         void generate(Block& root);
         llvm::Type* typeof(const Identifier& type);
-        void __stdlib_registry();
+        void internal_methods();
 
-        LLVMContext& getctx() {
+        LLVMContext& llvmc() {
             return context;
         }
 
@@ -69,7 +71,7 @@ class GeneratorContext
             block_stack.push(gbl);
         }
 
-        void pop() 
+        void pop()
         {
             auto* it = block_stack.top();
             block_stack.pop();
