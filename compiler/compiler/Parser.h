@@ -437,7 +437,7 @@ namespace  Vues  {
     // Tables.
   // YYPACT[STATE-NUM] -- Index in YYTABLE of the portion describing
   // STATE-NUM.
-  static const signed char yypact_[];
+  static const short yypact_[];
 
   // YYDEFACT[STATE-NUM] -- Default reduction number in state STATE-NUM.
   // Performed when YYTABLE does not specify something else to do.  Zero
@@ -702,7 +702,7 @@ namespace  Vues  {
     enum
     {
       yyeof_ = 0,
-      yylast_ = 133,     ///< Last index in yytable_.
+      yylast_ = 180,     ///< Last index in yytable_.
       yynnts_ = 17,  ///< Number of nonterminal symbols.
       yyfinal_ = 31, ///< Termination state number.
       yyterror_ = 1,

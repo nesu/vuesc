@@ -1,10 +1,11 @@
 #define DEBUG_TYPE "Generator"
 
 #include <iostream>
-
 #include "llvm/Support/Debug.h"
 
 #include "Parser.h"
+using Token = Vues::Parser::token::yytokentype;
+
 #include "GeneratorContext.h"
 #include "Error.h"
 
@@ -120,7 +121,6 @@ Value* Comparison::generator(GeneratorContext& context)
     }
 
     // TODO: Add support for (double/float) == integer
-    using Token = Vues::Parser::token::yytokentype;
     CmpInst::Predicate predicate = CmpInst::Predicate::BAD_ICMP_PREDICATE;
     switch (comparison_operator)
     {
@@ -149,6 +149,41 @@ Value* Comparison::generator(GeneratorContext& context)
     }
 
     return CmpInst::Create(Instruction::ICmp, predicate, vl, vr, "result", context.current_block()->block);
+}
+
+
+Value* Binary::generator(GeneratorContext& context)
+{
+    Value* vl = left->generator(context);
+    Value* vr = right->generator(context);
+
+    Instruction::BinaryOps bo;
+    switch (binary_operator)
+    {
+        case Token::T_AND:
+            bo = Instruction::And;
+            break;
+        case Token::T_OR:
+            bo = Instruction::Or;
+            break;
+        case Token::T_ADD:
+            bo = Instruction::Add;
+            break;
+        case Token::T_SUB:
+            bo = Instruction::Sub;
+            break;
+        case Token::T_MUL:
+            bo = Instruction::Mul;
+            break;
+        case Token::T_DIV:
+            bo = Instruction::SDiv;
+            break;
+        default:
+            COMPILER_ERROR << "Failed to determine instruction for binary operator.";
+            return nullptr;
+    }
+
+    return BinaryOperator::Create(bo, vl, vr, "bop", context.llvm_block());
 }
 
 
@@ -182,7 +217,11 @@ Value* Conditional::generator(GeneratorContext& context)
     }
 
     if_then = context.current_block()->block;
-    BranchInst::Create(if_cont, if_then);
+    //BranchInst::Create(if_cont, if_then);
+    // Do not create branch instr if block ends with terminator.
+    if (!context.current_block()->terminated()) {
+        BranchInst::Create(if_cont, if_then);
+    }
 
     // 
     // IF.THEN BLOCK
@@ -197,7 +236,10 @@ Value* Conditional::generator(GeneratorContext& context)
         }
 
         if_else = context.current_block()->block;
-        BranchInst::Create(if_cont, if_else);
+        // Do not create branch instr if block ends with terminator.
+        if (!context.current_block()->terminated()) {
+            BranchInst::Create(if_cont, if_else);
+        }
     }
 
     //
@@ -314,9 +356,12 @@ Value* MethodDeclaration::generator(GeneratorContext& context)
         return nullptr;
     }
 
-    ReturnInst::Create(context.llvmc(), context.current_block()->ret, context.current_block()->block);
-    context.pop();
+    // Create void return if method return type is void and block is without terminator.
+    if (retty->getType()->isVoidTy() && !context.current_block()->terminated()) {
+        ReturnInst::Create(context.llvmc(), 0, context.current_block()->block);
+    }
 
+    context.pop();
     // Validation?
     return func;
 }
@@ -344,14 +389,15 @@ Value* ReturnStatement::generator(GeneratorContext& context)
 {
     Value* ret = expression.generator(context);
     context.current_block()->ret = ret;
-    return ret;
+    
+    return ReturnInst::Create(context.llvmc(), ret, context.current_block()->block);
 }
 
 
 Value* BlankReturnStatement::generator(GeneratorContext& context)
 {
     context.current_block()->ret = 0;
-    return nullptr;
+    return ReturnInst::Create(context.llvmc(), 0, context.current_block()->block);
 }
 
 #undef DEBUG_TYPE

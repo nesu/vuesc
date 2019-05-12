@@ -137,6 +137,20 @@ class Comparison : public Expression
 };
 
 
+class Binary : public Expression
+{
+    public:
+        Expression* left;
+        Expression* right;
+        int binary_operator;
+
+        Binary(Expression* left, Expression* right, int binary_operator)
+            : left(left), right(right), binary_operator(binary_operator) {}
+
+        virtual llvm::Value* generator(GeneratorContext& context);
+};
+
+
 class Conditional : public Statement
 {
     public:

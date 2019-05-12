@@ -18,6 +18,7 @@ using namespace llvm;
 class GeneratorBlock
 {
     public:
+
         LocalRegistry* locals;
         GeneratorBlock() {
             locals = new LocalRegistry();
@@ -25,6 +26,10 @@ class GeneratorBlock
 
         BasicBlock* block;
         Value* ret;
+
+        bool terminated() {
+            return block->getTerminator() != nullptr;
+        }
 };
 
 class GeneratorContext
@@ -45,6 +50,10 @@ class GeneratorContext
 
         LLVMContext& llvmc() {
             return context;
+        }
+
+        BasicBlock* llvm_block() {
+            return current_block()->block;
         }
 
         GeneratorBlock* current_block() {

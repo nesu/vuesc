@@ -1,16 +1,6 @@
-
-
-var ab: int = 5
-
-if (ab == 5)
+val abt: Int = 3 * 3 - 1
+printf("R: %d", abt)
+if (abt == 9 && abt > 1)
 {
-	printf("AAA: %d", ab)
+	printf("Yes")
 }
-else
-{
-
-printf("AAA: %d", ab)
-}
-
-
-printf("AAA: %d", ab)

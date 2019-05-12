@@ -162,6 +162,18 @@ expression
             { $$ = new Comparison($1, $3, $2); }
         | expression T_NOT_EQUAL expression
             { $$ = new Comparison($1, $3, $2); }
+        | expression T_AND expression
+            { $$ = new Binary($1, $3, $2); }
+        | expression T_OR expression
+            { $$ = new Binary($1, $3, $2); }
+        | expression T_ADD expression
+            { $$ = new Binary($1, $3, $2); }
+        | expression T_SUB expression
+            { $$ = new Binary($1, $3, $2); }
+        | expression T_DIV expression
+            { $$ = new Binary($1, $3, $2); }
+        | expression T_MUL expression
+            { $$ = new Binary($1, $3, $2); }
         | constant
 ;
 
