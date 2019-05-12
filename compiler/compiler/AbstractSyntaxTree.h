@@ -44,6 +44,19 @@ class BlankReturnStatement : public Statement
         virtual llvm::Value* generator(GeneratorContext& context);
 };
 
+class Range : public Statement
+{
+    Expression* left;
+    Expression* right;
+    bool inclusive;
+
+    public:
+        Range(Expression* left, Expression* right, bool inclusive)
+            : left(left), right(right), inclusive(inclusive) {}
+
+        virtual llvm::Value* generator(GeneratorContext& context);
+};
+
 class Identifier : public Expression
 {
     public:
@@ -52,16 +65,12 @@ class Identifier : public Expression
         virtual llvm::Value* generator(GeneratorContext& context);
 };
 
-#include <iostream>
 
 class Integer : public Expression
 {
     public:
         long long value;
-        Integer(long long value) : value(value) {
-            std::cout << "Integer constructor value " << value << std::endl;
-        }
-
+        Integer(long long value) : value(value) {}
         virtual llvm::Value* generator(GeneratorContext& context);
 };
 

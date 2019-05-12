@@ -66,6 +66,9 @@
 "{"                                 return TOKEN(Token::TLBRACE);
 "}"                                 return TOKEN(Token::TRBRACE);
 
+"for"                               return Token::T_FOR;
+".."                                return Token::T_RANGE;
+
 "."                                 return TOKEN(Token::TDOT);
 ","                                 return TOKEN(Token::TCOMMA);
 ":"                                 return TOKEN(Token::TCOLON);

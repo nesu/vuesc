@@ -50,6 +50,7 @@
 %token <token> T_NOT_EQUAL T_GREATER_OR_EQUAL T_LESS_OR_EQUAL T_GREATER T_LESS 
 %token <token> T_ADD T_SUB T_MUL T_DIV
 %token <token> T_TRUE T_FALSE
+%token <token> T_FOR T_RANGE
 
 %type <identifier> identifier
 %type <expression> constant expression method_call_expr assignment_expr
@@ -92,6 +93,8 @@ statement
             { $$ = new ReturnStatement(*$2); }
         | TRETURN_VOID
             { $$ = new BlankReturnStatement(); }
+        | expression T_RANGE expression
+            { $$ = new Range($1, $3, false); }
 ;
 
 
@@ -149,8 +152,19 @@ expression
         | identifier { $<identifier>$ = $1; }
         | expression T_EQUAL expression 
             { $$ = new Comparison($1, $3, $2); }
+        | expression T_GREATER expression
+            { $$ = new Comparison($1, $3, $2); }
+        | expression T_GREATER_OR_EQUAL expression
+            { $$ = new Comparison($1, $3, $2); }
+        | expression T_LESS expression
+            { $$ = new Comparison($1, $3, $2); }
+        | expression T_LESS_OR_EQUAL expression
+            { $$ = new Comparison($1, $3, $2); }
+        | expression T_NOT_EQUAL expression
+            { $$ = new Comparison($1, $3, $2); }
         | constant
 ;
+
 
 identifier 
         : TIDENTIFIER { $$ = new Identifier(*$1); }

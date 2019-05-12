@@ -174,7 +174,8 @@ Value* Conditional::generator(GeneratorContext& context)
     //
     // IF.THEN BLOCK
     //
-    context.push(if_then);
+    //context.push(if_then);
+    context.current_block()->block = if_then;
     Value* if_then_v = then_block->generator(context);
     if (!if_then_v) {
         COMPILER_ERROR << "nullptr in if_then_v";
@@ -182,7 +183,6 @@ Value* Conditional::generator(GeneratorContext& context)
 
     if_then = context.current_block()->block;
     BranchInst::Create(if_cont, if_then);
-    context.pop();
 
     // 
     // IF.THEN BLOCK
@@ -190,7 +190,7 @@ Value* Conditional::generator(GeneratorContext& context)
     if (else_block)
     {
         F->getBasicBlockList().push_back(if_else);
-        context.push(if_else);
+        context.current_block()->block = if_else;
         Value * if_else_v = else_block->generator(context);
         if (!if_else_v) {
             COMPILER_ERROR << "nullptr in if_else_v";
@@ -198,7 +198,6 @@ Value* Conditional::generator(GeneratorContext& context)
 
         if_else = context.current_block()->block;
         BranchInst::Create(if_cont, if_else);
-        context.pop();
     }
 
     //
@@ -320,6 +319,24 @@ Value* MethodDeclaration::generator(GeneratorContext& context)
 
     // Validation?
     return func;
+}
+
+
+Value* Range::generator(GeneratorContext& context)
+{
+    Value* vl = left->generator(context);
+    Value* vr = right->generator(context);
+
+    if (!vl->getType()->isIntegerTy() || !vr->getType()->isIntegerTy())
+    {
+        SCRIPT_ERROR << "Range must be specified in integer type.";
+        return nullptr;
+    }
+
+    //
+    // Create range start and end values.
+    //
+    return nullptr;
 }
 
 

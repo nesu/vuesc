@@ -1,20 +1,16 @@
-fun art()
-{
-	printf("AAAAAAAAA")
-	val sk: int = 7
 
-	if (sk == 5)
-	{
-		val ss: int = 55
-		printf("AAAdfffAAAAAA")
-	}
-	else
-	{
-		var sss: string = "PRASAU"
-		printf("AAAAAAAAA")
-	}
-		
-	return;
+
+var ab: int = 5
+
+if (ab == 5)
+{
+	printf("AAA: %d", ab)
+}
+else
+{
+
+printf("AAA: %d", ab)
 }
 
-art()
+
+printf("AAA: %d", ab)
