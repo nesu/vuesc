@@ -44,6 +44,23 @@ class BlankReturnStatement : public Statement
         virtual llvm::Value* generator(GeneratorContext& context);
 };
 
+/*
+class Range : public Statement
+{
+    Expression* left;
+    Expression* right;
+
+    bool inclusive;
+    int step;
+
+    public:
+        Range(Expression* left, Expression* right, bool inclusive, int step)
+            : left(left), right(right), inclusive(inclusive), step(step) {}
+
+        virtual llvm::Value* generator(GeneratorContext& context);
+};*/
+
+
 class Identifier : public Expression
 {
     public:
@@ -52,16 +69,12 @@ class Identifier : public Expression
         virtual llvm::Value* generator(GeneratorContext& context);
 };
 
-#include <iostream>
 
 class Integer : public Expression
 {
     public:
         long long value;
-        Integer(long long value) : value(value) {
-            std::cout << "Integer constructor value " << value << std::endl;
-        }
-
+        Integer(long long value) : value(value) {}
         virtual llvm::Value* generator(GeneratorContext& context);
 };
 
@@ -128,15 +141,29 @@ class Comparison : public Expression
 };
 
 
+class Binary : public Expression
+{
+    public:
+        Expression* left;
+        Expression* right;
+        int binary_operator;
+
+        Binary(Expression* left, Expression* right, int binary_operator)
+            : left(left), right(right), binary_operator(binary_operator) {}
+
+        virtual llvm::Value* generator(GeneratorContext& context);
+};
+
+
 class Conditional : public Statement
 {
     public:
         Comparison* comparison;
-        Expression* then_block;
-        Expression* else_block;
+        Block* then_block;
+        Block* else_block;
 
-        Conditional(Expression* comparison, Expression* successful, Expression* fallback = nullptr)
-            : comparison((Comparison*) comparison), then_block(successful), else_block(fallback) {}
+        Conditional(Expression* comparison, Block* then_block, Block* else_block = nullptr)
+            : comparison((Comparison*) comparison), then_block(then_block), else_block(else_block) {}
 
         virtual llvm::Value* generator(GeneratorContext& context);
 };
@@ -197,6 +224,23 @@ class Assignment : public Expression
         Assignment(Identifier& left, Expression& right) :
             left(left), right(right) {}
         virtual llvm::Value* generator(GeneratorContext& context);
+};
+
+
+class For : public Statement
+{
+    Identifier& var;
+    Expression* start;
+    Expression* end;
+    Expression* step;
+    bool inclusive;
+    Block* inner_block;
+
+
+public:
+    For(Identifier& var, Expression* start, Expression* end, Expression* step, bool inclusive, Block* inner_block)
+        : var(var), start(start), end(end), step(step), inclusive(inclusive), inner_block(inner_block) {}
+    virtual llvm::Value* generator(GeneratorContext& context);
 };
 
 #endif // !_ABSTRACTSYNTAXTREE_H

@@ -246,7 +246,12 @@ namespace  Vues  {
         T_DIV = 287,
         T_TRUE = 288,
         T_FALSE = 289,
-        TASSIGN = 290
+        T_FOR = 290,
+        T_IN = 291,
+        T_RANGE = 292,
+        T_UNTIL = 293,
+        T_STEP = 294,
+        TASSIGN = 295
       };
     };
 
@@ -435,7 +440,7 @@ namespace  Vues  {
     // Tables.
   // YYPACT[STATE-NUM] -- Index in YYTABLE of the portion describing
   // STATE-NUM.
-  static const signed char yypact_[];
+  static const short yypact_[];
 
   // YYDEFACT[STATE-NUM] -- Default reduction number in state STATE-NUM.
   // Performed when YYTABLE does not specify something else to do.  Zero
@@ -700,12 +705,12 @@ namespace  Vues  {
     enum
     {
       yyeof_ = 0,
-      yylast_ = 115,     ///< Last index in yytable_.
-      yynnts_ = 17,  ///< Number of nonterminal symbols.
-      yyfinal_ = 31, ///< Termination state number.
+      yylast_ = 285,     ///< Last index in yytable_.
+      yynnts_ = 18,  ///< Number of nonterminal symbols.
+      yyfinal_ = 34, ///< Termination state number.
       yyterror_ = 1,
       yyerrcode_ = 256,
-      yyntokens_ = 36  ///< Number of tokens.
+      yyntokens_ = 41  ///< Number of tokens.
     };
 
 
@@ -716,7 +721,7 @@ namespace  Vues  {
 
 #line 6 "Parser.y" // lalr1.cc:401
 } //  Vues 
-#line 720 "Parser.h" // lalr1.cc:401
+#line 725 "Parser.h" // lalr1.cc:401
 
 
 

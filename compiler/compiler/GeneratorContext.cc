@@ -60,6 +60,13 @@ void GeneratorContext::internal_methods()
     FunctionType* ft = FunctionType::get(i32, makeArrayRef(argument_type_vec), true);
     Function* fn = Function::Create(ft, GlobalValue::LinkageTypes::ExternalLinkage, "printf", module);
     fn->setCallingConv(CallingConv::C);
+
+    
+    ft = FunctionType::get(void_, makeArrayRef(argument_type_vec), false);
+    Function* bound = (Function*)module->getOrInsertFunction("println", ft);
+    //bound->setCallingConv(CallingConv::C);
+
+    //fn = Function::Create(ft, GlobalValue::LinkageTypes::ExternalLinkage, "println", module);
 }
 
 
@@ -80,9 +87,12 @@ void GeneratorContext::generate(Block& root)
     }
 
     this->pop();
+    if (DebugFlag)
+    {
 #ifndef LLVM_NO_DUMP
-    module->dump();
+        module->dump();
 #endif // !LLVM_NO_DUMP
+    }
 
     if (llvm::verifyModule(*module, &outs()))
     {

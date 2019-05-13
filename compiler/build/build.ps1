@@ -16,4 +16,4 @@ Write-Host $parser_debug
 
 & $compiler -o ".vuesc/$($output).bc" $prsd "-debug-only=$($debug_type)" $vsi
 & llc -filetype=obj ".vuesc/$($output).bc"
-& lld-link -out:"$($output).exe" -defaultlib:libcmt "-libpath:C:\\Program Files (x86)\\Microsoft Visual Studio\\2017\\BuildTools\\VC\\Tools\\MSVC\\14.16.27023\\lib\\x64" "-libpath:C:\\Program Files (x86)\\Windows Kits\\10\\Lib\\10.0.17763.0\\ucrt\\x64" "-libpath:C:\\Program Files (x86)\\Windows Kits\\10\\Lib\\10.0.17763.0\\um\\x64" -nologo ".vuesc/$($output).obj"
+& lld-link -out:"$($output).exe" -defaultlib:libcmt "-libpath:C:\\Program Files (x86)\\Microsoft Visual Studio\\2017\\BuildTools\\VC\\Tools\\MSVC\\14.16.27023\\lib\\x64" "-libpath:C:\\Program Files (x86)\\Windows Kits\\10\\Lib\\10.0.17763.0\\ucrt\\x64" "-libpath:C:\\Program Files (x86)\\Windows Kits\\10\\Lib\\10.0.17763.0\\um\\x64" "-libpath:D:\\vuesc\\compiler\\Debug" -nologo ".vuesc/$($output).obj" "libcmt.lib" "compiler.lib" 

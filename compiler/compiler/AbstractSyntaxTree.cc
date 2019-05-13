@@ -1,10 +1,11 @@
-#define DEBUG_TYPE "Generator"
+﻿#define DEBUG_TYPE "Generator"
 
 #include <iostream>
-
 #include "llvm/Support/Debug.h"
 
 #include "Parser.h"
+using Token = Vues::Parser::token::yytokentype;
+
 #include "GeneratorContext.h"
 #include "Error.h"
 
@@ -25,7 +26,7 @@ Value* String::generator(GeneratorContext& context)
     GlobalVariable* var = new GlobalVariable(*context.module, at, true, GlobalValue::PrivateLinkage, 0, ".str");
     var->setAlignment(1);
 
-    Constant* const_astr = ConstantDataArray::getString(context.llvmc(), value);
+    Constant* const_astr = ConstantDataArray::getString(context.llvmc(), StringRef(value.c_str()), true);
     var->setInitializer(const_astr);
 
     std::vector<Constant*> ptr_vec;
@@ -120,7 +121,6 @@ Value* Comparison::generator(GeneratorContext& context)
     }
 
     // TODO: Add support for (double/float) == integer
-    using Token = Vues::Parser::token::yytokentype;
     CmpInst::Predicate predicate = CmpInst::Predicate::BAD_ICMP_PREDICATE;
     switch (comparison_operator)
     {
@@ -152,6 +152,41 @@ Value* Comparison::generator(GeneratorContext& context)
 }
 
 
+Value* Binary::generator(GeneratorContext& context)
+{
+    Value* vl = left->generator(context);
+    Value* vr = right->generator(context);
+
+    Instruction::BinaryOps bo;
+    switch (binary_operator)
+    {
+        case Token::T_AND:
+            bo = Instruction::And;
+            break;
+        case Token::T_OR:
+            bo = Instruction::Or;
+            break;
+        case Token::T_ADD:
+            bo = Instruction::Add;
+            break;
+        case Token::T_SUB:
+            bo = Instruction::Sub;
+            break;
+        case Token::T_MUL:
+            bo = Instruction::Mul;
+            break;
+        case Token::T_DIV:
+            bo = Instruction::SDiv;
+            break;
+        default:
+            COMPILER_ERROR << "Failed to determine instruction for binary operator.";
+            return nullptr;
+    }
+
+    return BinaryOperator::Create(bo, vl, vr, "bop", context.llvm_block());
+}
+
+
 Value* Conditional::generator(GeneratorContext& context)
 {
     Value* value = comparison->generator(context);
@@ -174,15 +209,19 @@ Value* Conditional::generator(GeneratorContext& context)
     //
     // IF.THEN BLOCK
     //
-    context.push(if_then);
+    //context.push(if_then);
+    context.current_block()->block = if_then;
     Value* if_then_v = then_block->generator(context);
     if (!if_then_v) {
         COMPILER_ERROR << "nullptr in if_then_v";
     }
 
     if_then = context.current_block()->block;
-    BranchInst::Create(if_cont, if_then);
-    context.pop();
+    //BranchInst::Create(if_cont, if_then);
+    // Do not create branch instr if block ends with terminator.
+    if (!context.current_block()->terminated()) {
+        BranchInst::Create(if_cont, if_then);
+    }
 
     // 
     // IF.THEN BLOCK
@@ -190,15 +229,17 @@ Value* Conditional::generator(GeneratorContext& context)
     if (else_block)
     {
         F->getBasicBlockList().push_back(if_else);
-        context.push(if_else);
+        context.current_block()->block = if_else;
         Value * if_else_v = else_block->generator(context);
         if (!if_else_v) {
             COMPILER_ERROR << "nullptr in if_else_v";
         }
 
         if_else = context.current_block()->block;
-        BranchInst::Create(if_cont, if_else);
-        context.pop();
+        // Do not create branch instr if block ends with terminator.
+        if (!context.current_block()->terminated()) {
+            BranchInst::Create(if_cont, if_else);
+        }
     }
 
     //
@@ -315,26 +356,133 @@ Value* MethodDeclaration::generator(GeneratorContext& context)
         return nullptr;
     }
 
-    ReturnInst::Create(context.llvmc(), context.current_block()->ret, context.current_block()->block);
-    context.pop();
+    // Create void return if method return type is void and block is without terminator.
+    if (retty->getType()->isVoidTy() && !context.current_block()->terminated()) {
+        ReturnInst::Create(context.llvmc(), 0, context.current_block()->block);
+    }
 
+    context.pop();
     // Validation?
     return func;
 }
+
+
+Value* For::generator(GeneratorContext& context)
+{
+    Value* sv = start->generator(context);
+    Value* ev = end->generator(context);
+
+    if (sv == nullptr) {
+        SCRIPT_ERROR << "For statement has start value that returned nullptr.";
+    }
+
+    if (ev == nullptr) {
+        SCRIPT_ERROR << "For statement has end value that returned nullptr.";
+    }
+
+    Function* F = context.llvm_block()->getParent();
+
+    AllocaInst* alloca_cursor = new AllocaInst(context.i64, 0, var.named, context.llvm_block());
+    new StoreInst(sv, alloca_cursor, context.llvm_block());
+    // Dabartiniame generatoriaus bloke sukuriamas kintamasis.
+    context.locals()->create(var.named, alloca_cursor, false, true);
+
+    BasicBlock* for_block = BasicBlock::Create(context.llvmc(), "for");
+    BasicBlock* for_cond = BasicBlock::Create(context.llvmc(), "for.cond", F);
+    BasicBlock* for_iter = BasicBlock::Create(context.llvmc(), "for.iter");
+    BasicBlock* for_end = BasicBlock::Create(context.llvmc(), "for.end");
+
+    BranchInst::Create(for_cond, context.llvm_block());
+
+    //
+    // FOR.COND
+    // Užkraunamas sukurtas kintamasis su load instrukcija, atliekamas palyginimas.
+    //
+    context.current_block()->block = for_cond;
+    // Pagal viską "Identifier" turėtų sukurti LoadInst čia
+    Value* cursor_value = var.generator(context);
+    CmpInst::Predicate predicate = inclusive ? CmpInst::Predicate::ICMP_SLE : CmpInst::Predicate::ICMP_SLT;
+    Value* comparison = ICmpInst::Create(Instruction::OtherOps::ICmp, predicate, cursor_value, ev, "forif", context.llvm_block());
+    BranchInst::Create(for_block, for_end, comparison, context.llvm_block());
+    for_cond = context.llvm_block();
+
+    //
+    // FOR.BLOCK
+    //
+    F->getBasicBlockList().push_back(for_block);
+    context.current_block()->block = for_block;
+    // Kaip bus jeigu "for" cikle bus "return" raktažodis?
+    inner_block->generator(context);
+    for_block = context.llvm_block();
+    BranchInst::Create(for_iter, context.llvm_block());
+
+    //
+    // FOR.ITER
+    // Pridedama arba atimama "step" reikšmė.
+    //
+    F->getBasicBlockList().push_back(for_iter);
+    context.current_block()->block = for_iter;
+
+    Value* increment;
+    if (step == nullptr) {
+        increment = ConstantInt::get(context.llvmc(), APInt(64, 1));
+    }
+    else
+    {
+        increment = step->generator(context);
+        if (increment == nullptr) {
+            SCRIPT_ERROR << "Step expression in for statement evaluated to nullptr.";
+            return nullptr;
+        }
+    }
+
+    cursor_value = var.generator(context);
+    Value* incremented = BinaryOperator::Create(Instruction::BinaryOps::Add, cursor_value, increment, "", context.llvm_block());
+    new StoreInst(incremented, alloca_cursor, context.llvm_block());
+    for_iter = context.llvm_block();
+    BranchInst::Create(for_cond, context.llvm_block());
+
+    //
+    // FOR.END
+    //
+    F->getBasicBlockList().push_back(for_end);
+    context.current_block()->block = for_end;
+
+    return for_end;
+}
+
+/*
+Value* Range::generator(GeneratorContext& context)
+{
+    Value* vl = left->generator(context);
+    Value* vr = right->generator(context);
+
+    if (!vl->getType()->isIntegerTy() || !vr->getType()->isIntegerTy())
+    {
+        SCRIPT_ERROR << "Range must be specified in integer type.";
+        return nullptr;
+    }
+
+    //
+    // Create range start and end values.
+    //
+    return nullptr;
+}*/
 
 
 Value* ReturnStatement::generator(GeneratorContext& context)
 {
     Value* ret = expression.generator(context);
     context.current_block()->ret = ret;
-    return ret;
+    
+    return ReturnInst::Create(context.llvmc(), ret, context.current_block()->block);
 }
 
 
 Value* BlankReturnStatement::generator(GeneratorContext& context)
 {
     context.current_block()->ret = 0;
-    return nullptr;
+    return ReturnInst::Create(context.llvmc(), 0, context.current_block()->block);
 }
 
 #undef DEBUG_TYPE

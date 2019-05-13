@@ -9,7 +9,7 @@
 #define DECLSPEC
 #endif // _MSC_VER
 
-extern "C" __declspec(dllexport) void println();
+extern "C" __declspec(dllexport) void println(char * format);
 
 /*
 class BuiltinDefinition

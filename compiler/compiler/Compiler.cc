@@ -53,5 +53,5 @@ int main(int argc, char* argv[])
     llvm::WriteBitcodeToFile(*context.module, *fd_ostream);
 
 
-    return EXIT_SUCCESS;
+    return 0;
 }
