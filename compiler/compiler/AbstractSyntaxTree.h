@@ -44,18 +44,22 @@ class BlankReturnStatement : public Statement
         virtual llvm::Value* generator(GeneratorContext& context);
 };
 
+/*
 class Range : public Statement
 {
     Expression* left;
     Expression* right;
+
     bool inclusive;
+    int step;
 
     public:
-        Range(Expression* left, Expression* right, bool inclusive)
-            : left(left), right(right), inclusive(inclusive) {}
+        Range(Expression* left, Expression* right, bool inclusive, int step)
+            : left(left), right(right), inclusive(inclusive), step(step) {}
 
         virtual llvm::Value* generator(GeneratorContext& context);
-};
+};*/
+
 
 class Identifier : public Expression
 {
@@ -155,11 +159,11 @@ class Conditional : public Statement
 {
     public:
         Comparison* comparison;
-        Expression* then_block;
-        Expression* else_block;
+        Block* then_block;
+        Block* else_block;
 
-        Conditional(Expression* comparison, Expression* successful, Expression* fallback = nullptr)
-            : comparison((Comparison*) comparison), then_block(successful), else_block(fallback) {}
+        Conditional(Expression* comparison, Block* then_block, Block* else_block = nullptr)
+            : comparison((Comparison*) comparison), then_block(then_block), else_block(else_block) {}
 
         virtual llvm::Value* generator(GeneratorContext& context);
 };
@@ -220,6 +224,23 @@ class Assignment : public Expression
         Assignment(Identifier& left, Expression& right) :
             left(left), right(right) {}
         virtual llvm::Value* generator(GeneratorContext& context);
+};
+
+
+class For : public Statement
+{
+    Identifier& var;
+    Expression* start;
+    Expression* end;
+    Expression* step;
+    bool inclusive;
+    Block* inner_block;
+
+
+public:
+    For(Identifier& var, Expression* start, Expression* end, Expression* step, bool inclusive, Block* inner_block)
+        : var(var), start(start), end(end), step(step), inclusive(inclusive), inner_block(inner_block) {}
+    virtual llvm::Value* generator(GeneratorContext& context);
 };
 
 #endif // !_ABSTRACTSYNTAXTREE_H

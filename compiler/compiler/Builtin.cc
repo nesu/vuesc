@@ -5,11 +5,11 @@
 
 #include "Builtin.h"
 
-extern "C" __declspec(dllexport) void println()
+extern "C" __declspec(dllexport) void println(char * format)
 {
     /*va_list argptr;
-    //va_start(argptr, format);
+    va_start(argptr, format);
     vfprintf(stdout, format, argptr);
     va_end(argptr);*/
-    printf("HAHAHAHAH\n");
+    std::cout << format << std::endl;
 }

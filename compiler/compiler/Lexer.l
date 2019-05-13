@@ -67,7 +67,10 @@
 "}"                                 return TOKEN(Token::TRBRACE);
 
 "for"                               return Token::T_FOR;
+"in"                                return Token::T_IN;
 ".."                                return Token::T_RANGE;
+"until"                             return Token::T_UNTIL;
+"step"                              return Token::T_STEP;
 
 "."                                 return TOKEN(Token::TDOT);
 ","                                 return TOKEN(Token::TCOMMA);

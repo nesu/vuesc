@@ -50,14 +50,14 @@
 %token <token> T_NOT_EQUAL T_GREATER_OR_EQUAL T_LESS_OR_EQUAL T_GREATER T_LESS 
 %token <token> T_ADD T_SUB T_MUL T_DIV
 %token <token> T_TRUE T_FALSE
-%token <token> T_FOR T_RANGE
+%token <token> T_FOR T_IN T_RANGE T_UNTIL T_STEP
 
 %type <identifier> identifier
 %type <expression> constant expression method_call_expr assignment_expr
 %type <expression_vector> method_call_args;
 %type <variable_vector> method_decl_args;
 %type <block> program statements block
-%type <statement> statement var_decl val_decl method_arg_decl method_decl conditional
+%type <statement> statement for_statement var_decl val_decl method_arg_decl method_decl conditional
 
 %left TASSIGN
 %left T_ADD T_SUB
@@ -70,14 +70,18 @@
 %%
 
 program 
-        : /* blank */   { root_block = new Block(); }
-        | statements    { root_block = $1; }
+        :
+            { root_block = new Block(); }
+        | statements    
+            { root_block = $1; }
 ;
 
 
 statements 
-        : statement                 { $$ = new Block(); $$->statements.push_back($<statement>1); }
-        | statements statement      { $1->statements.push_back($<statement>2); }
+        : statement                 
+            { $$ = new Block(); $$->statements.push_back($<statement>1); }
+        | statements statement      
+            { $1->statements.push_back($<statement>2); }
 ;
 
 
@@ -87,20 +91,32 @@ statement
         | val_decl
         | method_decl
         | method_arg_decl
+        | for_statement
         | expression 
             { $$ = new ExpressionStatement(*$1); } 
         | TRETURN expression
             { $$ = new ReturnStatement(*$2); }
         | TRETURN_VOID
             { $$ = new BlankReturnStatement(); }
-        | expression T_RANGE expression
-            { $$ = new Range($1, $3, false); }
 ;
 
 
 block 
-        : TLBRACE statements TRBRACE    { $$ = $2; }
-        | TLBRACE TRBRACE               { $$ = new Block(); }
+        : TLBRACE statements TRBRACE    
+            { $$ = $2; }
+        | TLBRACE TRBRACE               
+            { $$ = new Block(); }
+;
+
+for_statement
+        : T_FOR TLPAREN identifier T_IN expression T_RANGE expression TRPAREN block
+            { $$ = new For(*$3, $5, $7, nullptr, true, $9); }
+        | T_FOR TLPAREN identifier T_IN expression T_RANGE expression T_STEP expression TRPAREN block
+            { $$ = new For(*$3, $5, $7, $9, true, $11); }
+        | T_FOR TLPAREN identifier T_IN expression T_UNTIL expression TRPAREN block
+            { $$ = new For(*$3, $5, $7, nullptr, false, $9); }
+        | T_FOR TLPAREN identifier T_IN expression T_UNTIL expression T_STEP expression TRPAREN block
+            { $$ = new For(*$3, $5, $7, $9, false, $11); }
 ;
 
 
@@ -112,38 +128,50 @@ conditional
 ;
 
 var_decl 
-        : TVAR identifier TCOLON identifier                     { $$ = new VariableDeclaration(*$2, *$4); }
-        | TVAR identifier TCOLON identifier TASSIGN expression  { $$ = new VariableDeclaration(*$2, *$4, $6); }
+        : TVAR identifier TCOLON identifier                     
+            { $$ = new VariableDeclaration(*$2, *$4); }
+        | TVAR identifier TCOLON identifier TASSIGN expression  
+            { $$ = new VariableDeclaration(*$2, *$4, $6); }
 ;
 
 val_decl
-        : TVAL identifier TCOLON identifier TASSIGN expression { $$ = new VariableDeclaration(*$2, *$4, $6, false); }
+        : TVAL identifier TCOLON identifier TASSIGN expression 
+            { $$ = new VariableDeclaration(*$2, *$4, $6, false); }
 ;
 
 
 method_arg_decl
-        : identifier TCOLON identifier                      { $$ = new VariableDeclaration(*$1, *$3); }
-        | identifier TCOLON identifier TASSIGN expression   { $$ = new VariableDeclaration(*$1, *$3, $5); }
+        : identifier TCOLON identifier                      
+            { $$ = new VariableDeclaration(*$1, *$3); }
+        | identifier TCOLON identifier TASSIGN expression   
+            { $$ = new VariableDeclaration(*$1, *$3, $5); }
 ;
 
 
 method_decl 
-        : TFUN identifier TLPAREN method_decl_args TRPAREN block                    { $$ = new MethodDeclaration(*$2, *$4, *$6); }
-        | TFUN identifier TLPAREN method_decl_args TRPAREN TCOLON identifier block  { $$ = new MethodDeclaration(*$2, *$4, *$7, *$8); }
+        : TFUN identifier TLPAREN method_decl_args TRPAREN block                    
+            { $$ = new MethodDeclaration(*$2, *$4, *$6); }
+        | TFUN identifier TLPAREN method_decl_args TRPAREN TCOLON identifier block  
+            { $$ = new MethodDeclaration(*$2, *$4, *$7, *$8); }
 ;
 
 method_decl_args 
-        :                                           { $$ = new std::vector<VariableDeclaration*>(); }
-        | method_arg_decl                           { $$ = new std::vector<VariableDeclaration*>(); $$->push_back($<method_arg_decl>1); }
-        | method_decl_args TCOMMA method_arg_decl   { $1->push_back($<method_arg_decl>3); }
+        :                                           
+            { $$ = new std::vector<VariableDeclaration*>(); }
+        | method_arg_decl                           
+            { $$ = new std::vector<VariableDeclaration*>(); $$->push_back($<method_arg_decl>1); }
+        | method_decl_args TCOMMA method_arg_decl   
+            { $1->push_back($<method_arg_decl>3); }
 ;
 
 method_call_expr
-        : identifier TLPAREN method_call_args TRPAREN { $$ = new MethodCall(*$1, *$3); }
+        : identifier TLPAREN method_call_args TRPAREN 
+            { $$ = new MethodCall(*$1, *$3); }
 ;
 
 assignment_expr
-        : identifier TASSIGN expression { $$ = new Assignment(*$<identifier>1, *$3); }
+        : identifier TASSIGN expression 
+            { $$ = new Assignment(*$<identifier>1, *$3); }
 ;
 
 expression 
@@ -177,22 +205,29 @@ expression
         | constant
 ;
 
-
 identifier 
-        : TIDENTIFIER { $$ = new Identifier(*$1); }
+        : TIDENTIFIER 
+            { $$ = new Identifier(*$1); }
 ;
 
 constant
-        : TINTEGER  { $$ = new Integer(atol($1->c_str())); }
-        | TSTRING   { $$ = new String(*$1); }
-        | T_TRUE    { $$ = new Boolean(true); }
-        | T_FALSE   { $$ = new Boolean(false); }
+        : TINTEGER  
+            { $$ = new Integer(atol($1->c_str())); }
+        | TSTRING   
+            { $$ = new String(*$1); }
+        | T_TRUE    
+            { $$ = new Boolean(true); }
+        | T_FALSE   
+            { $$ = new Boolean(false); }
 ;
 
 method_call_args 
-        :                                               { $$ = new std::vector<Expression*>(); }
-        | expression                                    { $$ = new std::vector<Expression*>(); $$->push_back($1); }
-        | method_call_args TCOMMA expression            { $1->push_back($3); }
+        :                                               
+            { $$ = new std::vector<Expression*>(); }
+        | expression                                    
+            { $$ = new std::vector<Expression*>(); $$->push_back($1); }
+        | method_call_args TCOMMA expression            
+            { $1->push_back($3); }
 ;
 
 

@@ -2,7 +2,6 @@ Terminals unused in grammar
 
    TDOT
    TQUOTE
-   T_FOR
 
 
 Grammar
@@ -20,144 +19,154 @@ Grammar
     7          | val_decl
     8          | method_decl
     9          | method_arg_decl
-   10          | expression
-   11          | TRETURN expression
-   12          | TRETURN_VOID
-   13          | expression T_RANGE expression
+   10          | for_statement
+   11          | expression
+   12          | TRETURN expression
+   13          | TRETURN_VOID
 
    14 block: TLBRACE statements TRBRACE
    15      | TLBRACE TRBRACE
 
-   16 conditional: TIF TLPAREN expression TRPAREN block
-   17            | TIF TLPAREN expression TRPAREN block TELSE block
+   16 for_statement: T_FOR TLPAREN identifier T_IN expression T_RANGE expression TRPAREN block
+   17              | T_FOR TLPAREN identifier T_IN expression T_RANGE expression T_STEP expression TRPAREN block
+   18              | T_FOR TLPAREN identifier T_IN expression T_UNTIL expression TRPAREN block
+   19              | T_FOR TLPAREN identifier T_IN expression T_UNTIL expression T_STEP expression TRPAREN block
 
-   18 var_decl: TVAR identifier TCOLON identifier
-   19         | TVAR identifier TCOLON identifier TASSIGN expression
+   20 conditional: TIF TLPAREN expression TRPAREN block
+   21            | TIF TLPAREN expression TRPAREN block TELSE block
 
-   20 val_decl: TVAL identifier TCOLON identifier TASSIGN expression
+   22 var_decl: TVAR identifier TCOLON identifier
+   23         | TVAR identifier TCOLON identifier TASSIGN expression
 
-   21 method_arg_decl: identifier TCOLON identifier
-   22                | identifier TCOLON identifier TASSIGN expression
+   24 val_decl: TVAL identifier TCOLON identifier TASSIGN expression
 
-   23 method_decl: TFUN identifier TLPAREN method_decl_args TRPAREN block
-   24            | TFUN identifier TLPAREN method_decl_args TRPAREN TCOLON identifier block
+   25 method_arg_decl: identifier TCOLON identifier
+   26                | identifier TCOLON identifier TASSIGN expression
 
-   25 method_decl_args: %empty
-   26                 | method_arg_decl
-   27                 | method_decl_args TCOMMA method_arg_decl
+   27 method_decl: TFUN identifier TLPAREN method_decl_args TRPAREN block
+   28            | TFUN identifier TLPAREN method_decl_args TRPAREN TCOLON identifier block
 
-   28 method_call_expr: identifier TLPAREN method_call_args TRPAREN
+   29 method_decl_args: %empty
+   30                 | method_arg_decl
+   31                 | method_decl_args TCOMMA method_arg_decl
 
-   29 assignment_expr: identifier TASSIGN expression
+   32 method_call_expr: identifier TLPAREN method_call_args TRPAREN
 
-   30 expression: method_call_expr
-   31           | assignment_expr
-   32           | identifier
-   33           | expression T_EQUAL expression
-   34           | expression T_GREATER expression
-   35           | expression T_GREATER_OR_EQUAL expression
-   36           | expression T_LESS expression
-   37           | expression T_LESS_OR_EQUAL expression
-   38           | expression T_NOT_EQUAL expression
-   39           | expression T_AND expression
-   40           | expression T_OR expression
-   41           | expression T_ADD expression
-   42           | expression T_SUB expression
-   43           | expression T_DIV expression
-   44           | expression T_MUL expression
-   45           | constant
+   33 assignment_expr: identifier TASSIGN expression
 
-   46 identifier: TIDENTIFIER
+   34 expression: method_call_expr
+   35           | assignment_expr
+   36           | identifier
+   37           | expression T_EQUAL expression
+   38           | expression T_GREATER expression
+   39           | expression T_GREATER_OR_EQUAL expression
+   40           | expression T_LESS expression
+   41           | expression T_LESS_OR_EQUAL expression
+   42           | expression T_NOT_EQUAL expression
+   43           | expression T_AND expression
+   44           | expression T_OR expression
+   45           | expression T_ADD expression
+   46           | expression T_SUB expression
+   47           | expression T_DIV expression
+   48           | expression T_MUL expression
+   49           | constant
 
-   47 constant: TINTEGER
-   48         | TSTRING
-   49         | T_TRUE
-   50         | T_FALSE
+   50 identifier: TIDENTIFIER
 
-   51 method_call_args: %empty
-   52                 | expression
-   53                 | method_call_args TCOMMA expression
+   51 constant: TINTEGER
+   52         | TSTRING
+   53         | T_TRUE
+   54         | T_FALSE
+
+   55 method_call_args: %empty
+   56                 | expression
+   57                 | method_call_args TCOMMA expression
 
 
 Terminals, with rules where they appear
 
 $end (0) 0
 error (256)
-TINTEGER <string> (258) 47
-TSTRING <string> (259) 48
-TIDENTIFIER <string> (260) 46
-TFUN <token> (261) 23 24
-TVAR <token> (262) 18 19
-TVAL <token> (263) 20
-TRETURN <token> (264) 11
-TRETURN_VOID <token> (265) 12
-TIF <token> (266) 16 17
-TELSE <token> (267) 17
-TLPAREN <token> (268) 16 17 23 24 28
-TRPAREN <token> (269) 16 17 23 24 28
+TINTEGER <string> (258) 51
+TSTRING <string> (259) 52
+TIDENTIFIER <string> (260) 50
+TFUN <token> (261) 27 28
+TVAR <token> (262) 22 23
+TVAL <token> (263) 24
+TRETURN <token> (264) 12
+TRETURN_VOID <token> (265) 13
+TIF <token> (266) 20 21
+TELSE <token> (267) 21
+TLPAREN <token> (268) 16 17 18 19 20 21 27 28 32
+TRPAREN <token> (269) 16 17 18 19 20 21 27 28 32
 TLBRACE <token> (270) 14 15
 TRBRACE <token> (271) 14 15
-TCOMMA <token> (272) 27 53
+TCOMMA <token> (272) 31 57
 TDOT <token> (273)
-TCOLON <token> (274) 18 19 20 21 22 24
+TCOLON <token> (274) 22 23 24 25 26 28
 TQUOTE <token> (275)
-T_AND <token> (276) 39
-T_OR <token> (277) 40
-T_EQUAL <token> (278) 33
-T_NOT_EQUAL <token> (279) 38
-T_GREATER_OR_EQUAL <token> (280) 35
-T_LESS_OR_EQUAL <token> (281) 37
-T_GREATER <token> (282) 34
-T_LESS <token> (283) 36
-T_ADD <token> (284) 41
-T_SUB <token> (285) 42
-T_MUL <token> (286) 44
-T_DIV <token> (287) 43
-T_TRUE <token> (288) 49
-T_FALSE <token> (289) 50
-T_FOR <token> (290)
-T_RANGE <token> (291) 13
-TASSIGN (292) 19 20 22 29
+T_AND <token> (276) 43
+T_OR <token> (277) 44
+T_EQUAL <token> (278) 37
+T_NOT_EQUAL <token> (279) 42
+T_GREATER_OR_EQUAL <token> (280) 39
+T_LESS_OR_EQUAL <token> (281) 41
+T_GREATER <token> (282) 38
+T_LESS <token> (283) 40
+T_ADD <token> (284) 45
+T_SUB <token> (285) 46
+T_MUL <token> (286) 48
+T_DIV <token> (287) 47
+T_TRUE <token> (288) 53
+T_FALSE <token> (289) 54
+T_FOR <token> (290) 16 17 18 19
+T_IN <token> (291) 16 17 18 19
+T_RANGE <token> (292) 16 17
+T_UNTIL <token> (293) 18 19
+T_STEP <token> (294) 17 19
+TASSIGN (295) 23 24 26 33
 
 
 Nonterminals, with rules where they appear
 
-$accept (38)
+$accept (41)
     on left: 0
-program <block> (39)
+program <block> (42)
     on left: 1 2, on right: 0
-statements <block> (40)
+statements <block> (43)
     on left: 3 4, on right: 2 4 14
-statement <statement> (41)
+statement <statement> (44)
     on left: 5 6 7 8 9 10 11 12 13, on right: 3 4
-block <block> (42)
-    on left: 14 15, on right: 16 17 23 24
-conditional <statement> (43)
-    on left: 16 17, on right: 5
-var_decl <statement> (44)
-    on left: 18 19, on right: 6
-val_decl <statement> (45)
-    on left: 20, on right: 7
-method_arg_decl <statement> (46)
-    on left: 21 22, on right: 9 26 27
-method_decl <statement> (47)
-    on left: 23 24, on right: 8
-method_decl_args <variable_vector> (48)
-    on left: 25 26 27, on right: 23 24 27
-method_call_expr <expression> (49)
-    on left: 28, on right: 30
-assignment_expr <expression> (50)
-    on left: 29, on right: 31
-expression <expression> (51)
-    on left: 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45, on right:
-    10 11 13 16 17 19 20 22 29 33 34 35 36 37 38 39 40 41 42 43 44
-    52 53
-identifier <identifier> (52)
-    on left: 46, on right: 18 19 20 21 22 23 24 28 29 32
-constant <expression> (53)
-    on left: 47 48 49 50, on right: 45
-method_call_args <expression_vector> (54)
-    on left: 51 52 53, on right: 28 53
+block <block> (45)
+    on left: 14 15, on right: 16 17 18 19 20 21 27 28
+for_statement <statement> (46)
+    on left: 16 17 18 19, on right: 10
+conditional <statement> (47)
+    on left: 20 21, on right: 5
+var_decl <statement> (48)
+    on left: 22 23, on right: 6
+val_decl <statement> (49)
+    on left: 24, on right: 7
+method_arg_decl <statement> (50)
+    on left: 25 26, on right: 9 30 31
+method_decl <statement> (51)
+    on left: 27 28, on right: 8
+method_decl_args <variable_vector> (52)
+    on left: 29 30 31, on right: 27 28 31
+method_call_expr <expression> (53)
+    on left: 32, on right: 34
+assignment_expr <expression> (54)
+    on left: 33, on right: 35
+expression <expression> (55)
+    on left: 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49, on right:
+    11 12 16 17 18 19 20 21 23 24 26 33 37 38 39 40 41 42 43 44 45
+    46 47 48 56 57
+identifier <identifier> (56)
+    on left: 50, on right: 16 17 18 19 22 23 24 25 26 27 28 32 33 36
+constant <expression> (57)
+    on left: 51 52 53 54, on right: 49
+method_call_args <expression_vector> (58)
+    on left: 55 56 57, on right: 32 57
 
 
 State 0
@@ -175,77 +184,79 @@ State 0
     TIF           shift, and go to state 9
     T_TRUE        shift, and go to state 10
     T_FALSE       shift, and go to state 11
+    T_FOR         shift, and go to state 12
 
     $default  reduce using rule 1 (program)
 
-    program           go to state 12
-    statements        go to state 13
-    statement         go to state 14
-    conditional       go to state 15
-    var_decl          go to state 16
-    val_decl          go to state 17
-    method_arg_decl   go to state 18
-    method_decl       go to state 19
-    method_call_expr  go to state 20
-    assignment_expr   go to state 21
-    expression        go to state 22
-    identifier        go to state 23
-    constant          go to state 24
+    program           go to state 13
+    statements        go to state 14
+    statement         go to state 15
+    for_statement     go to state 16
+    conditional       go to state 17
+    var_decl          go to state 18
+    val_decl          go to state 19
+    method_arg_decl   go to state 20
+    method_decl       go to state 21
+    method_call_expr  go to state 22
+    assignment_expr   go to state 23
+    expression        go to state 24
+    identifier        go to state 25
+    constant          go to state 26
 
 
 State 1
 
-   47 constant: TINTEGER .
+   51 constant: TINTEGER .
 
-    $default  reduce using rule 47 (constant)
+    $default  reduce using rule 51 (constant)
 
 
 State 2
 
-   48 constant: TSTRING .
+   52 constant: TSTRING .
 
-    $default  reduce using rule 48 (constant)
+    $default  reduce using rule 52 (constant)
 
 
 State 3
 
-   46 identifier: TIDENTIFIER .
+   50 identifier: TIDENTIFIER .
 
-    $default  reduce using rule 46 (identifier)
+    $default  reduce using rule 50 (identifier)
 
 
 State 4
 
-   23 method_decl: TFUN . identifier TLPAREN method_decl_args TRPAREN block
-   24            | TFUN . identifier TLPAREN method_decl_args TRPAREN TCOLON identifier block
-
-    TIDENTIFIER  shift, and go to state 3
-
-    identifier  go to state 25
-
-
-State 5
-
-   18 var_decl: TVAR . identifier TCOLON identifier
-   19         | TVAR . identifier TCOLON identifier TASSIGN expression
-
-    TIDENTIFIER  shift, and go to state 3
-
-    identifier  go to state 26
-
-
-State 6
-
-   20 val_decl: TVAL . identifier TCOLON identifier TASSIGN expression
+   27 method_decl: TFUN . identifier TLPAREN method_decl_args TRPAREN block
+   28            | TFUN . identifier TLPAREN method_decl_args TRPAREN TCOLON identifier block
 
     TIDENTIFIER  shift, and go to state 3
 
     identifier  go to state 27
 
 
+State 5
+
+   22 var_decl: TVAR . identifier TCOLON identifier
+   23         | TVAR . identifier TCOLON identifier TASSIGN expression
+
+    TIDENTIFIER  shift, and go to state 3
+
+    identifier  go to state 28
+
+
+State 6
+
+   24 val_decl: TVAL . identifier TCOLON identifier TASSIGN expression
+
+    TIDENTIFIER  shift, and go to state 3
+
+    identifier  go to state 29
+
+
 State 7
 
-   11 statement: TRETURN . expression
+   12 statement: TRETURN . expression
 
     TINTEGER     shift, and go to state 1
     TSTRING      shift, and go to state 2
@@ -253,50 +264,60 @@ State 7
     T_TRUE       shift, and go to state 10
     T_FALSE      shift, and go to state 11
 
-    method_call_expr  go to state 20
-    assignment_expr   go to state 21
-    expression        go to state 28
-    identifier        go to state 29
-    constant          go to state 24
+    method_call_expr  go to state 22
+    assignment_expr   go to state 23
+    expression        go to state 30
+    identifier        go to state 31
+    constant          go to state 26
 
 
 State 8
 
-   12 statement: TRETURN_VOID .
+   13 statement: TRETURN_VOID .
 
-    $default  reduce using rule 12 (statement)
+    $default  reduce using rule 13 (statement)
 
 
 State 9
 
-   16 conditional: TIF . TLPAREN expression TRPAREN block
-   17            | TIF . TLPAREN expression TRPAREN block TELSE block
+   20 conditional: TIF . TLPAREN expression TRPAREN block
+   21            | TIF . TLPAREN expression TRPAREN block TELSE block
 
-    TLPAREN  shift, and go to state 30
+    TLPAREN  shift, and go to state 32
 
 
 State 10
 
-   49 constant: T_TRUE .
+   53 constant: T_TRUE .
 
-    $default  reduce using rule 49 (constant)
+    $default  reduce using rule 53 (constant)
 
 
 State 11
 
-   50 constant: T_FALSE .
+   54 constant: T_FALSE .
 
-    $default  reduce using rule 50 (constant)
+    $default  reduce using rule 54 (constant)
 
 
 State 12
 
-    0 $accept: program . $end
+   16 for_statement: T_FOR . TLPAREN identifier T_IN expression T_RANGE expression TRPAREN block
+   17              | T_FOR . TLPAREN identifier T_IN expression T_RANGE expression T_STEP expression TRPAREN block
+   18              | T_FOR . TLPAREN identifier T_IN expression T_UNTIL expression TRPAREN block
+   19              | T_FOR . TLPAREN identifier T_IN expression T_UNTIL expression T_STEP expression TRPAREN block
 
-    $end  shift, and go to state 31
+    TLPAREN  shift, and go to state 33
 
 
 State 13
+
+    0 $accept: program . $end
+
+    $end  shift, and go to state 34
+
+
+State 14
 
     2 program: statements .
     4 statements: statements . statement
@@ -312,205 +333,212 @@ State 13
     TIF           shift, and go to state 9
     T_TRUE        shift, and go to state 10
     T_FALSE       shift, and go to state 11
+    T_FOR         shift, and go to state 12
 
     $default  reduce using rule 2 (program)
 
-    statement         go to state 32
-    conditional       go to state 15
-    var_decl          go to state 16
-    val_decl          go to state 17
-    method_arg_decl   go to state 18
-    method_decl       go to state 19
-    method_call_expr  go to state 20
-    assignment_expr   go to state 21
-    expression        go to state 22
-    identifier        go to state 23
-    constant          go to state 24
+    statement         go to state 35
+    for_statement     go to state 16
+    conditional       go to state 17
+    var_decl          go to state 18
+    val_decl          go to state 19
+    method_arg_decl   go to state 20
+    method_decl       go to state 21
+    method_call_expr  go to state 22
+    assignment_expr   go to state 23
+    expression        go to state 24
+    identifier        go to state 25
+    constant          go to state 26
 
 
-State 14
+State 15
 
     3 statements: statement .
 
     $default  reduce using rule 3 (statements)
 
 
-State 15
+State 16
+
+   10 statement: for_statement .
+
+    $default  reduce using rule 10 (statement)
+
+
+State 17
 
     5 statement: conditional .
 
     $default  reduce using rule 5 (statement)
 
 
-State 16
+State 18
 
     6 statement: var_decl .
 
     $default  reduce using rule 6 (statement)
 
 
-State 17
+State 19
 
     7 statement: val_decl .
 
     $default  reduce using rule 7 (statement)
 
 
-State 18
+State 20
 
     9 statement: method_arg_decl .
 
     $default  reduce using rule 9 (statement)
 
 
-State 19
+State 21
 
     8 statement: method_decl .
 
     $default  reduce using rule 8 (statement)
 
 
-State 20
-
-   30 expression: method_call_expr .
-
-    $default  reduce using rule 30 (expression)
-
-
-State 21
-
-   31 expression: assignment_expr .
-
-    $default  reduce using rule 31 (expression)
-
-
 State 22
 
-   10 statement: expression .
-   13          | expression . T_RANGE expression
-   33 expression: expression . T_EQUAL expression
-   34           | expression . T_GREATER expression
-   35           | expression . T_GREATER_OR_EQUAL expression
-   36           | expression . T_LESS expression
-   37           | expression . T_LESS_OR_EQUAL expression
-   38           | expression . T_NOT_EQUAL expression
-   39           | expression . T_AND expression
-   40           | expression . T_OR expression
-   41           | expression . T_ADD expression
-   42           | expression . T_SUB expression
-   43           | expression . T_DIV expression
-   44           | expression . T_MUL expression
+   34 expression: method_call_expr .
 
-    T_AND               shift, and go to state 33
-    T_OR                shift, and go to state 34
-    T_EQUAL             shift, and go to state 35
-    T_NOT_EQUAL         shift, and go to state 36
-    T_GREATER_OR_EQUAL  shift, and go to state 37
-    T_LESS_OR_EQUAL     shift, and go to state 38
-    T_GREATER           shift, and go to state 39
-    T_LESS              shift, and go to state 40
-    T_ADD               shift, and go to state 41
-    T_SUB               shift, and go to state 42
-    T_MUL               shift, and go to state 43
-    T_DIV               shift, and go to state 44
-    T_RANGE             shift, and go to state 45
-
-    $default  reduce using rule 10 (statement)
+    $default  reduce using rule 34 (expression)
 
 
 State 23
 
-   21 method_arg_decl: identifier . TCOLON identifier
-   22                | identifier . TCOLON identifier TASSIGN expression
-   28 method_call_expr: identifier . TLPAREN method_call_args TRPAREN
-   29 assignment_expr: identifier . TASSIGN expression
-   32 expression: identifier .
+   35 expression: assignment_expr .
 
-    TLPAREN  shift, and go to state 46
-    TCOLON   shift, and go to state 47
-    TASSIGN  shift, and go to state 48
-
-    $default  reduce using rule 32 (expression)
+    $default  reduce using rule 35 (expression)
 
 
 State 24
 
-   45 expression: constant .
+   11 statement: expression .
+   37 expression: expression . T_EQUAL expression
+   38           | expression . T_GREATER expression
+   39           | expression . T_GREATER_OR_EQUAL expression
+   40           | expression . T_LESS expression
+   41           | expression . T_LESS_OR_EQUAL expression
+   42           | expression . T_NOT_EQUAL expression
+   43           | expression . T_AND expression
+   44           | expression . T_OR expression
+   45           | expression . T_ADD expression
+   46           | expression . T_SUB expression
+   47           | expression . T_DIV expression
+   48           | expression . T_MUL expression
 
-    $default  reduce using rule 45 (expression)
-
-
-State 25
-
-   23 method_decl: TFUN identifier . TLPAREN method_decl_args TRPAREN block
-   24            | TFUN identifier . TLPAREN method_decl_args TRPAREN TCOLON identifier block
-
-    TLPAREN  shift, and go to state 49
-
-
-State 26
-
-   18 var_decl: TVAR identifier . TCOLON identifier
-   19         | TVAR identifier . TCOLON identifier TASSIGN expression
-
-    TCOLON  shift, and go to state 50
-
-
-State 27
-
-   20 val_decl: TVAL identifier . TCOLON identifier TASSIGN expression
-
-    TCOLON  shift, and go to state 51
-
-
-State 28
-
-   11 statement: TRETURN expression .
-   33 expression: expression . T_EQUAL expression
-   34           | expression . T_GREATER expression
-   35           | expression . T_GREATER_OR_EQUAL expression
-   36           | expression . T_LESS expression
-   37           | expression . T_LESS_OR_EQUAL expression
-   38           | expression . T_NOT_EQUAL expression
-   39           | expression . T_AND expression
-   40           | expression . T_OR expression
-   41           | expression . T_ADD expression
-   42           | expression . T_SUB expression
-   43           | expression . T_DIV expression
-   44           | expression . T_MUL expression
-
-    T_AND               shift, and go to state 33
-    T_OR                shift, and go to state 34
-    T_EQUAL             shift, and go to state 35
-    T_NOT_EQUAL         shift, and go to state 36
-    T_GREATER_OR_EQUAL  shift, and go to state 37
-    T_LESS_OR_EQUAL     shift, and go to state 38
-    T_GREATER           shift, and go to state 39
-    T_LESS              shift, and go to state 40
-    T_ADD               shift, and go to state 41
-    T_SUB               shift, and go to state 42
-    T_MUL               shift, and go to state 43
-    T_DIV               shift, and go to state 44
+    T_AND               shift, and go to state 36
+    T_OR                shift, and go to state 37
+    T_EQUAL             shift, and go to state 38
+    T_NOT_EQUAL         shift, and go to state 39
+    T_GREATER_OR_EQUAL  shift, and go to state 40
+    T_LESS_OR_EQUAL     shift, and go to state 41
+    T_GREATER           shift, and go to state 42
+    T_LESS              shift, and go to state 43
+    T_ADD               shift, and go to state 44
+    T_SUB               shift, and go to state 45
+    T_MUL               shift, and go to state 46
+    T_DIV               shift, and go to state 47
 
     $default  reduce using rule 11 (statement)
 
 
+State 25
+
+   25 method_arg_decl: identifier . TCOLON identifier
+   26                | identifier . TCOLON identifier TASSIGN expression
+   32 method_call_expr: identifier . TLPAREN method_call_args TRPAREN
+   33 assignment_expr: identifier . TASSIGN expression
+   36 expression: identifier .
+
+    TLPAREN  shift, and go to state 48
+    TCOLON   shift, and go to state 49
+    TASSIGN  shift, and go to state 50
+
+    $default  reduce using rule 36 (expression)
+
+
+State 26
+
+   49 expression: constant .
+
+    $default  reduce using rule 49 (expression)
+
+
+State 27
+
+   27 method_decl: TFUN identifier . TLPAREN method_decl_args TRPAREN block
+   28            | TFUN identifier . TLPAREN method_decl_args TRPAREN TCOLON identifier block
+
+    TLPAREN  shift, and go to state 51
+
+
+State 28
+
+   22 var_decl: TVAR identifier . TCOLON identifier
+   23         | TVAR identifier . TCOLON identifier TASSIGN expression
+
+    TCOLON  shift, and go to state 52
+
+
 State 29
 
-   28 method_call_expr: identifier . TLPAREN method_call_args TRPAREN
-   29 assignment_expr: identifier . TASSIGN expression
-   32 expression: identifier .
+   24 val_decl: TVAL identifier . TCOLON identifier TASSIGN expression
 
-    TLPAREN  shift, and go to state 46
-    TASSIGN  shift, and go to state 48
-
-    $default  reduce using rule 32 (expression)
+    TCOLON  shift, and go to state 53
 
 
 State 30
 
-   16 conditional: TIF TLPAREN . expression TRPAREN block
-   17            | TIF TLPAREN . expression TRPAREN block TELSE block
+   12 statement: TRETURN expression .
+   37 expression: expression . T_EQUAL expression
+   38           | expression . T_GREATER expression
+   39           | expression . T_GREATER_OR_EQUAL expression
+   40           | expression . T_LESS expression
+   41           | expression . T_LESS_OR_EQUAL expression
+   42           | expression . T_NOT_EQUAL expression
+   43           | expression . T_AND expression
+   44           | expression . T_OR expression
+   45           | expression . T_ADD expression
+   46           | expression . T_SUB expression
+   47           | expression . T_DIV expression
+   48           | expression . T_MUL expression
+
+    T_AND               shift, and go to state 36
+    T_OR                shift, and go to state 37
+    T_EQUAL             shift, and go to state 38
+    T_NOT_EQUAL         shift, and go to state 39
+    T_GREATER_OR_EQUAL  shift, and go to state 40
+    T_LESS_OR_EQUAL     shift, and go to state 41
+    T_GREATER           shift, and go to state 42
+    T_LESS              shift, and go to state 43
+    T_ADD               shift, and go to state 44
+    T_SUB               shift, and go to state 45
+    T_MUL               shift, and go to state 46
+    T_DIV               shift, and go to state 47
+
+    $default  reduce using rule 12 (statement)
+
+
+State 31
+
+   32 method_call_expr: identifier . TLPAREN method_call_args TRPAREN
+   33 assignment_expr: identifier . TASSIGN expression
+   36 expression: identifier .
+
+    TLPAREN  shift, and go to state 48
+    TASSIGN  shift, and go to state 50
+
+    $default  reduce using rule 36 (expression)
+
+
+State 32
+
+   20 conditional: TIF TLPAREN . expression TRPAREN block
+   21            | TIF TLPAREN . expression TRPAREN block TELSE block
 
     TINTEGER     shift, and go to state 1
     TSTRING      shift, and go to state 2
@@ -518,81 +546,42 @@ State 30
     T_TRUE       shift, and go to state 10
     T_FALSE      shift, and go to state 11
 
-    method_call_expr  go to state 20
-    assignment_expr   go to state 21
-    expression        go to state 52
-    identifier        go to state 29
-    constant          go to state 24
+    method_call_expr  go to state 22
+    assignment_expr   go to state 23
+    expression        go to state 54
+    identifier        go to state 31
+    constant          go to state 26
 
 
-State 31
+State 33
+
+   16 for_statement: T_FOR TLPAREN . identifier T_IN expression T_RANGE expression TRPAREN block
+   17              | T_FOR TLPAREN . identifier T_IN expression T_RANGE expression T_STEP expression TRPAREN block
+   18              | T_FOR TLPAREN . identifier T_IN expression T_UNTIL expression TRPAREN block
+   19              | T_FOR TLPAREN . identifier T_IN expression T_UNTIL expression T_STEP expression TRPAREN block
+
+    TIDENTIFIER  shift, and go to state 3
+
+    identifier  go to state 55
+
+
+State 34
 
     0 $accept: program $end .
 
     $default  accept
 
 
-State 32
+State 35
 
     4 statements: statements statement .
 
     $default  reduce using rule 4 (statements)
 
 
-State 33
-
-   39 expression: expression T_AND . expression
-
-    TINTEGER     shift, and go to state 1
-    TSTRING      shift, and go to state 2
-    TIDENTIFIER  shift, and go to state 3
-    T_TRUE       shift, and go to state 10
-    T_FALSE      shift, and go to state 11
-
-    method_call_expr  go to state 20
-    assignment_expr   go to state 21
-    expression        go to state 53
-    identifier        go to state 29
-    constant          go to state 24
-
-
-State 34
-
-   40 expression: expression T_OR . expression
-
-    TINTEGER     shift, and go to state 1
-    TSTRING      shift, and go to state 2
-    TIDENTIFIER  shift, and go to state 3
-    T_TRUE       shift, and go to state 10
-    T_FALSE      shift, and go to state 11
-
-    method_call_expr  go to state 20
-    assignment_expr   go to state 21
-    expression        go to state 54
-    identifier        go to state 29
-    constant          go to state 24
-
-
-State 35
-
-   33 expression: expression T_EQUAL . expression
-
-    TINTEGER     shift, and go to state 1
-    TSTRING      shift, and go to state 2
-    TIDENTIFIER  shift, and go to state 3
-    T_TRUE       shift, and go to state 10
-    T_FALSE      shift, and go to state 11
-
-    method_call_expr  go to state 20
-    assignment_expr   go to state 21
-    expression        go to state 55
-    identifier        go to state 29
-    constant          go to state 24
-
-
 State 36
 
-   38 expression: expression T_NOT_EQUAL . expression
+   43 expression: expression T_AND . expression
 
     TINTEGER     shift, and go to state 1
     TSTRING      shift, and go to state 2
@@ -600,16 +589,16 @@ State 36
     T_TRUE       shift, and go to state 10
     T_FALSE      shift, and go to state 11
 
-    method_call_expr  go to state 20
-    assignment_expr   go to state 21
+    method_call_expr  go to state 22
+    assignment_expr   go to state 23
     expression        go to state 56
-    identifier        go to state 29
-    constant          go to state 24
+    identifier        go to state 31
+    constant          go to state 26
 
 
 State 37
 
-   35 expression: expression T_GREATER_OR_EQUAL . expression
+   44 expression: expression T_OR . expression
 
     TINTEGER     shift, and go to state 1
     TSTRING      shift, and go to state 2
@@ -617,16 +606,16 @@ State 37
     T_TRUE       shift, and go to state 10
     T_FALSE      shift, and go to state 11
 
-    method_call_expr  go to state 20
-    assignment_expr   go to state 21
+    method_call_expr  go to state 22
+    assignment_expr   go to state 23
     expression        go to state 57
-    identifier        go to state 29
-    constant          go to state 24
+    identifier        go to state 31
+    constant          go to state 26
 
 
 State 38
 
-   37 expression: expression T_LESS_OR_EQUAL . expression
+   37 expression: expression T_EQUAL . expression
 
     TINTEGER     shift, and go to state 1
     TSTRING      shift, and go to state 2
@@ -634,16 +623,16 @@ State 38
     T_TRUE       shift, and go to state 10
     T_FALSE      shift, and go to state 11
 
-    method_call_expr  go to state 20
-    assignment_expr   go to state 21
+    method_call_expr  go to state 22
+    assignment_expr   go to state 23
     expression        go to state 58
-    identifier        go to state 29
-    constant          go to state 24
+    identifier        go to state 31
+    constant          go to state 26
 
 
 State 39
 
-   34 expression: expression T_GREATER . expression
+   42 expression: expression T_NOT_EQUAL . expression
 
     TINTEGER     shift, and go to state 1
     TSTRING      shift, and go to state 2
@@ -651,16 +640,16 @@ State 39
     T_TRUE       shift, and go to state 10
     T_FALSE      shift, and go to state 11
 
-    method_call_expr  go to state 20
-    assignment_expr   go to state 21
+    method_call_expr  go to state 22
+    assignment_expr   go to state 23
     expression        go to state 59
-    identifier        go to state 29
-    constant          go to state 24
+    identifier        go to state 31
+    constant          go to state 26
 
 
 State 40
 
-   36 expression: expression T_LESS . expression
+   39 expression: expression T_GREATER_OR_EQUAL . expression
 
     TINTEGER     shift, and go to state 1
     TSTRING      shift, and go to state 2
@@ -668,16 +657,16 @@ State 40
     T_TRUE       shift, and go to state 10
     T_FALSE      shift, and go to state 11
 
-    method_call_expr  go to state 20
-    assignment_expr   go to state 21
+    method_call_expr  go to state 22
+    assignment_expr   go to state 23
     expression        go to state 60
-    identifier        go to state 29
-    constant          go to state 24
+    identifier        go to state 31
+    constant          go to state 26
 
 
 State 41
 
-   41 expression: expression T_ADD . expression
+   41 expression: expression T_LESS_OR_EQUAL . expression
 
     TINTEGER     shift, and go to state 1
     TSTRING      shift, and go to state 2
@@ -685,16 +674,16 @@ State 41
     T_TRUE       shift, and go to state 10
     T_FALSE      shift, and go to state 11
 
-    method_call_expr  go to state 20
-    assignment_expr   go to state 21
+    method_call_expr  go to state 22
+    assignment_expr   go to state 23
     expression        go to state 61
-    identifier        go to state 29
-    constant          go to state 24
+    identifier        go to state 31
+    constant          go to state 26
 
 
 State 42
 
-   42 expression: expression T_SUB . expression
+   38 expression: expression T_GREATER . expression
 
     TINTEGER     shift, and go to state 1
     TSTRING      shift, and go to state 2
@@ -702,16 +691,16 @@ State 42
     T_TRUE       shift, and go to state 10
     T_FALSE      shift, and go to state 11
 
-    method_call_expr  go to state 20
-    assignment_expr   go to state 21
+    method_call_expr  go to state 22
+    assignment_expr   go to state 23
     expression        go to state 62
-    identifier        go to state 29
-    constant          go to state 24
+    identifier        go to state 31
+    constant          go to state 26
 
 
 State 43
 
-   44 expression: expression T_MUL . expression
+   40 expression: expression T_LESS . expression
 
     TINTEGER     shift, and go to state 1
     TSTRING      shift, and go to state 2
@@ -719,16 +708,16 @@ State 43
     T_TRUE       shift, and go to state 10
     T_FALSE      shift, and go to state 11
 
-    method_call_expr  go to state 20
-    assignment_expr   go to state 21
+    method_call_expr  go to state 22
+    assignment_expr   go to state 23
     expression        go to state 63
-    identifier        go to state 29
-    constant          go to state 24
+    identifier        go to state 31
+    constant          go to state 26
 
 
 State 44
 
-   43 expression: expression T_DIV . expression
+   45 expression: expression T_ADD . expression
 
     TINTEGER     shift, and go to state 1
     TSTRING      shift, and go to state 2
@@ -736,16 +725,16 @@ State 44
     T_TRUE       shift, and go to state 10
     T_FALSE      shift, and go to state 11
 
-    method_call_expr  go to state 20
-    assignment_expr   go to state 21
+    method_call_expr  go to state 22
+    assignment_expr   go to state 23
     expression        go to state 64
-    identifier        go to state 29
-    constant          go to state 24
+    identifier        go to state 31
+    constant          go to state 26
 
 
 State 45
 
-   13 statement: expression T_RANGE . expression
+   46 expression: expression T_SUB . expression
 
     TINTEGER     shift, and go to state 1
     TSTRING      shift, and go to state 2
@@ -753,16 +742,16 @@ State 45
     T_TRUE       shift, and go to state 10
     T_FALSE      shift, and go to state 11
 
-    method_call_expr  go to state 20
-    assignment_expr   go to state 21
+    method_call_expr  go to state 22
+    assignment_expr   go to state 23
     expression        go to state 65
-    identifier        go to state 29
-    constant          go to state 24
+    identifier        go to state 31
+    constant          go to state 26
 
 
 State 46
 
-   28 method_call_expr: identifier TLPAREN . method_call_args TRPAREN
+   48 expression: expression T_MUL . expression
 
     TINTEGER     shift, and go to state 1
     TSTRING      shift, and go to state 2
@@ -770,29 +759,16 @@ State 46
     T_TRUE       shift, and go to state 10
     T_FALSE      shift, and go to state 11
 
-    $default  reduce using rule 51 (method_call_args)
-
-    method_call_expr  go to state 20
-    assignment_expr   go to state 21
+    method_call_expr  go to state 22
+    assignment_expr   go to state 23
     expression        go to state 66
-    identifier        go to state 29
-    constant          go to state 24
-    method_call_args  go to state 67
+    identifier        go to state 31
+    constant          go to state 26
 
 
 State 47
 
-   21 method_arg_decl: identifier TCOLON . identifier
-   22                | identifier TCOLON . identifier TASSIGN expression
-
-    TIDENTIFIER  shift, and go to state 3
-
-    identifier  go to state 68
-
-
-State 48
-
-   29 assignment_expr: identifier TASSIGN . expression
+   47 expression: expression T_DIV . expression
 
     TINTEGER     shift, and go to state 1
     TSTRING      shift, and go to state 2
@@ -800,554 +776,558 @@ State 48
     T_TRUE       shift, and go to state 10
     T_FALSE      shift, and go to state 11
 
-    method_call_expr  go to state 20
-    assignment_expr   go to state 21
-    expression        go to state 69
-    identifier        go to state 29
-    constant          go to state 24
+    method_call_expr  go to state 22
+    assignment_expr   go to state 23
+    expression        go to state 67
+    identifier        go to state 31
+    constant          go to state 26
+
+
+State 48
+
+   32 method_call_expr: identifier TLPAREN . method_call_args TRPAREN
+
+    TINTEGER     shift, and go to state 1
+    TSTRING      shift, and go to state 2
+    TIDENTIFIER  shift, and go to state 3
+    T_TRUE       shift, and go to state 10
+    T_FALSE      shift, and go to state 11
+
+    $default  reduce using rule 55 (method_call_args)
+
+    method_call_expr  go to state 22
+    assignment_expr   go to state 23
+    expression        go to state 68
+    identifier        go to state 31
+    constant          go to state 26
+    method_call_args  go to state 69
 
 
 State 49
 
-   23 method_decl: TFUN identifier TLPAREN . method_decl_args TRPAREN block
-   24            | TFUN identifier TLPAREN . method_decl_args TRPAREN TCOLON identifier block
+   25 method_arg_decl: identifier TCOLON . identifier
+   26                | identifier TCOLON . identifier TASSIGN expression
 
     TIDENTIFIER  shift, and go to state 3
 
-    $default  reduce using rule 25 (method_decl_args)
-
-    method_arg_decl   go to state 70
-    method_decl_args  go to state 71
-    identifier        go to state 72
+    identifier  go to state 70
 
 
 State 50
 
-   18 var_decl: TVAR identifier TCOLON . identifier
-   19         | TVAR identifier TCOLON . identifier TASSIGN expression
+   33 assignment_expr: identifier TASSIGN . expression
 
+    TINTEGER     shift, and go to state 1
+    TSTRING      shift, and go to state 2
     TIDENTIFIER  shift, and go to state 3
+    T_TRUE       shift, and go to state 10
+    T_FALSE      shift, and go to state 11
 
-    identifier  go to state 73
+    method_call_expr  go to state 22
+    assignment_expr   go to state 23
+    expression        go to state 71
+    identifier        go to state 31
+    constant          go to state 26
 
 
 State 51
 
-   20 val_decl: TVAL identifier TCOLON . identifier TASSIGN expression
+   27 method_decl: TFUN identifier TLPAREN . method_decl_args TRPAREN block
+   28            | TFUN identifier TLPAREN . method_decl_args TRPAREN TCOLON identifier block
 
     TIDENTIFIER  shift, and go to state 3
 
-    identifier  go to state 74
+    $default  reduce using rule 29 (method_decl_args)
+
+    method_arg_decl   go to state 72
+    method_decl_args  go to state 73
+    identifier        go to state 74
 
 
 State 52
 
-   16 conditional: TIF TLPAREN expression . TRPAREN block
-   17            | TIF TLPAREN expression . TRPAREN block TELSE block
-   33 expression: expression . T_EQUAL expression
-   34           | expression . T_GREATER expression
-   35           | expression . T_GREATER_OR_EQUAL expression
-   36           | expression . T_LESS expression
-   37           | expression . T_LESS_OR_EQUAL expression
-   38           | expression . T_NOT_EQUAL expression
-   39           | expression . T_AND expression
-   40           | expression . T_OR expression
-   41           | expression . T_ADD expression
-   42           | expression . T_SUB expression
-   43           | expression . T_DIV expression
-   44           | expression . T_MUL expression
+   22 var_decl: TVAR identifier TCOLON . identifier
+   23         | TVAR identifier TCOLON . identifier TASSIGN expression
 
-    TRPAREN             shift, and go to state 75
-    T_AND               shift, and go to state 33
-    T_OR                shift, and go to state 34
-    T_EQUAL             shift, and go to state 35
-    T_NOT_EQUAL         shift, and go to state 36
-    T_GREATER_OR_EQUAL  shift, and go to state 37
-    T_LESS_OR_EQUAL     shift, and go to state 38
-    T_GREATER           shift, and go to state 39
-    T_LESS              shift, and go to state 40
-    T_ADD               shift, and go to state 41
-    T_SUB               shift, and go to state 42
-    T_MUL               shift, and go to state 43
-    T_DIV               shift, and go to state 44
+    TIDENTIFIER  shift, and go to state 3
+
+    identifier  go to state 75
 
 
 State 53
 
-   33 expression: expression . T_EQUAL expression
-   34           | expression . T_GREATER expression
-   35           | expression . T_GREATER_OR_EQUAL expression
-   36           | expression . T_LESS expression
-   37           | expression . T_LESS_OR_EQUAL expression
-   38           | expression . T_NOT_EQUAL expression
-   39           | expression . T_AND expression
-   39           | expression T_AND expression .
-   40           | expression . T_OR expression
-   41           | expression . T_ADD expression
-   42           | expression . T_SUB expression
-   43           | expression . T_DIV expression
-   44           | expression . T_MUL expression
+   24 val_decl: TVAL identifier TCOLON . identifier TASSIGN expression
 
-    T_EQUAL             shift, and go to state 35
-    T_NOT_EQUAL         shift, and go to state 36
-    T_GREATER_OR_EQUAL  shift, and go to state 37
-    T_LESS_OR_EQUAL     shift, and go to state 38
-    T_GREATER           shift, and go to state 39
-    T_LESS              shift, and go to state 40
+    TIDENTIFIER  shift, and go to state 3
 
-    $default  reduce using rule 39 (expression)
+    identifier  go to state 76
 
 
 State 54
 
-   33 expression: expression . T_EQUAL expression
-   34           | expression . T_GREATER expression
-   35           | expression . T_GREATER_OR_EQUAL expression
-   36           | expression . T_LESS expression
-   37           | expression . T_LESS_OR_EQUAL expression
-   38           | expression . T_NOT_EQUAL expression
-   39           | expression . T_AND expression
-   40           | expression . T_OR expression
-   40           | expression T_OR expression .
-   41           | expression . T_ADD expression
-   42           | expression . T_SUB expression
-   43           | expression . T_DIV expression
-   44           | expression . T_MUL expression
+   20 conditional: TIF TLPAREN expression . TRPAREN block
+   21            | TIF TLPAREN expression . TRPAREN block TELSE block
+   37 expression: expression . T_EQUAL expression
+   38           | expression . T_GREATER expression
+   39           | expression . T_GREATER_OR_EQUAL expression
+   40           | expression . T_LESS expression
+   41           | expression . T_LESS_OR_EQUAL expression
+   42           | expression . T_NOT_EQUAL expression
+   43           | expression . T_AND expression
+   44           | expression . T_OR expression
+   45           | expression . T_ADD expression
+   46           | expression . T_SUB expression
+   47           | expression . T_DIV expression
+   48           | expression . T_MUL expression
 
-    T_EQUAL             shift, and go to state 35
-    T_NOT_EQUAL         shift, and go to state 36
-    T_GREATER_OR_EQUAL  shift, and go to state 37
-    T_LESS_OR_EQUAL     shift, and go to state 38
-    T_GREATER           shift, and go to state 39
-    T_LESS              shift, and go to state 40
-
-    $default  reduce using rule 40 (expression)
+    TRPAREN             shift, and go to state 77
+    T_AND               shift, and go to state 36
+    T_OR                shift, and go to state 37
+    T_EQUAL             shift, and go to state 38
+    T_NOT_EQUAL         shift, and go to state 39
+    T_GREATER_OR_EQUAL  shift, and go to state 40
+    T_LESS_OR_EQUAL     shift, and go to state 41
+    T_GREATER           shift, and go to state 42
+    T_LESS              shift, and go to state 43
+    T_ADD               shift, and go to state 44
+    T_SUB               shift, and go to state 45
+    T_MUL               shift, and go to state 46
+    T_DIV               shift, and go to state 47
 
 
 State 55
 
-   33 expression: expression . T_EQUAL expression
-   33           | expression T_EQUAL expression .
-   34           | expression . T_GREATER expression
-   35           | expression . T_GREATER_OR_EQUAL expression
-   36           | expression . T_LESS expression
-   37           | expression . T_LESS_OR_EQUAL expression
-   38           | expression . T_NOT_EQUAL expression
-   39           | expression . T_AND expression
-   40           | expression . T_OR expression
-   41           | expression . T_ADD expression
-   42           | expression . T_SUB expression
-   43           | expression . T_DIV expression
-   44           | expression . T_MUL expression
+   16 for_statement: T_FOR TLPAREN identifier . T_IN expression T_RANGE expression TRPAREN block
+   17              | T_FOR TLPAREN identifier . T_IN expression T_RANGE expression T_STEP expression TRPAREN block
+   18              | T_FOR TLPAREN identifier . T_IN expression T_UNTIL expression TRPAREN block
+   19              | T_FOR TLPAREN identifier . T_IN expression T_UNTIL expression T_STEP expression TRPAREN block
 
-    $default  reduce using rule 33 (expression)
+    T_IN  shift, and go to state 78
 
 
 State 56
 
-   33 expression: expression . T_EQUAL expression
-   34           | expression . T_GREATER expression
-   35           | expression . T_GREATER_OR_EQUAL expression
-   36           | expression . T_LESS expression
-   37           | expression . T_LESS_OR_EQUAL expression
-   38           | expression . T_NOT_EQUAL expression
-   38           | expression T_NOT_EQUAL expression .
-   39           | expression . T_AND expression
-   40           | expression . T_OR expression
-   41           | expression . T_ADD expression
-   42           | expression . T_SUB expression
-   43           | expression . T_DIV expression
-   44           | expression . T_MUL expression
+   37 expression: expression . T_EQUAL expression
+   38           | expression . T_GREATER expression
+   39           | expression . T_GREATER_OR_EQUAL expression
+   40           | expression . T_LESS expression
+   41           | expression . T_LESS_OR_EQUAL expression
+   42           | expression . T_NOT_EQUAL expression
+   43           | expression . T_AND expression
+   43           | expression T_AND expression .
+   44           | expression . T_OR expression
+   45           | expression . T_ADD expression
+   46           | expression . T_SUB expression
+   47           | expression . T_DIV expression
+   48           | expression . T_MUL expression
 
-    $default  reduce using rule 38 (expression)
+    T_EQUAL             shift, and go to state 38
+    T_NOT_EQUAL         shift, and go to state 39
+    T_GREATER_OR_EQUAL  shift, and go to state 40
+    T_LESS_OR_EQUAL     shift, and go to state 41
+    T_GREATER           shift, and go to state 42
+    T_LESS              shift, and go to state 43
+
+    $default  reduce using rule 43 (expression)
 
 
 State 57
 
-   33 expression: expression . T_EQUAL expression
-   34           | expression . T_GREATER expression
-   35           | expression . T_GREATER_OR_EQUAL expression
-   35           | expression T_GREATER_OR_EQUAL expression .
-   36           | expression . T_LESS expression
-   37           | expression . T_LESS_OR_EQUAL expression
-   38           | expression . T_NOT_EQUAL expression
-   39           | expression . T_AND expression
-   40           | expression . T_OR expression
-   41           | expression . T_ADD expression
-   42           | expression . T_SUB expression
-   43           | expression . T_DIV expression
-   44           | expression . T_MUL expression
+   37 expression: expression . T_EQUAL expression
+   38           | expression . T_GREATER expression
+   39           | expression . T_GREATER_OR_EQUAL expression
+   40           | expression . T_LESS expression
+   41           | expression . T_LESS_OR_EQUAL expression
+   42           | expression . T_NOT_EQUAL expression
+   43           | expression . T_AND expression
+   44           | expression . T_OR expression
+   44           | expression T_OR expression .
+   45           | expression . T_ADD expression
+   46           | expression . T_SUB expression
+   47           | expression . T_DIV expression
+   48           | expression . T_MUL expression
 
-    $default  reduce using rule 35 (expression)
+    T_EQUAL             shift, and go to state 38
+    T_NOT_EQUAL         shift, and go to state 39
+    T_GREATER_OR_EQUAL  shift, and go to state 40
+    T_LESS_OR_EQUAL     shift, and go to state 41
+    T_GREATER           shift, and go to state 42
+    T_LESS              shift, and go to state 43
+
+    $default  reduce using rule 44 (expression)
 
 
 State 58
 
-   33 expression: expression . T_EQUAL expression
-   34           | expression . T_GREATER expression
-   35           | expression . T_GREATER_OR_EQUAL expression
-   36           | expression . T_LESS expression
-   37           | expression . T_LESS_OR_EQUAL expression
-   37           | expression T_LESS_OR_EQUAL expression .
-   38           | expression . T_NOT_EQUAL expression
-   39           | expression . T_AND expression
-   40           | expression . T_OR expression
-   41           | expression . T_ADD expression
-   42           | expression . T_SUB expression
-   43           | expression . T_DIV expression
-   44           | expression . T_MUL expression
+   37 expression: expression . T_EQUAL expression
+   37           | expression T_EQUAL expression .
+   38           | expression . T_GREATER expression
+   39           | expression . T_GREATER_OR_EQUAL expression
+   40           | expression . T_LESS expression
+   41           | expression . T_LESS_OR_EQUAL expression
+   42           | expression . T_NOT_EQUAL expression
+   43           | expression . T_AND expression
+   44           | expression . T_OR expression
+   45           | expression . T_ADD expression
+   46           | expression . T_SUB expression
+   47           | expression . T_DIV expression
+   48           | expression . T_MUL expression
 
     $default  reduce using rule 37 (expression)
 
 
 State 59
 
-   33 expression: expression . T_EQUAL expression
-   34           | expression . T_GREATER expression
-   34           | expression T_GREATER expression .
-   35           | expression . T_GREATER_OR_EQUAL expression
-   36           | expression . T_LESS expression
-   37           | expression . T_LESS_OR_EQUAL expression
-   38           | expression . T_NOT_EQUAL expression
-   39           | expression . T_AND expression
-   40           | expression . T_OR expression
-   41           | expression . T_ADD expression
-   42           | expression . T_SUB expression
-   43           | expression . T_DIV expression
-   44           | expression . T_MUL expression
+   37 expression: expression . T_EQUAL expression
+   38           | expression . T_GREATER expression
+   39           | expression . T_GREATER_OR_EQUAL expression
+   40           | expression . T_LESS expression
+   41           | expression . T_LESS_OR_EQUAL expression
+   42           | expression . T_NOT_EQUAL expression
+   42           | expression T_NOT_EQUAL expression .
+   43           | expression . T_AND expression
+   44           | expression . T_OR expression
+   45           | expression . T_ADD expression
+   46           | expression . T_SUB expression
+   47           | expression . T_DIV expression
+   48           | expression . T_MUL expression
 
-    $default  reduce using rule 34 (expression)
+    $default  reduce using rule 42 (expression)
 
 
 State 60
 
-   33 expression: expression . T_EQUAL expression
-   34           | expression . T_GREATER expression
-   35           | expression . T_GREATER_OR_EQUAL expression
-   36           | expression . T_LESS expression
-   36           | expression T_LESS expression .
-   37           | expression . T_LESS_OR_EQUAL expression
-   38           | expression . T_NOT_EQUAL expression
-   39           | expression . T_AND expression
-   40           | expression . T_OR expression
-   41           | expression . T_ADD expression
-   42           | expression . T_SUB expression
-   43           | expression . T_DIV expression
-   44           | expression . T_MUL expression
+   37 expression: expression . T_EQUAL expression
+   38           | expression . T_GREATER expression
+   39           | expression . T_GREATER_OR_EQUAL expression
+   39           | expression T_GREATER_OR_EQUAL expression .
+   40           | expression . T_LESS expression
+   41           | expression . T_LESS_OR_EQUAL expression
+   42           | expression . T_NOT_EQUAL expression
+   43           | expression . T_AND expression
+   44           | expression . T_OR expression
+   45           | expression . T_ADD expression
+   46           | expression . T_SUB expression
+   47           | expression . T_DIV expression
+   48           | expression . T_MUL expression
 
-    $default  reduce using rule 36 (expression)
+    $default  reduce using rule 39 (expression)
 
 
 State 61
 
-   33 expression: expression . T_EQUAL expression
-   34           | expression . T_GREATER expression
-   35           | expression . T_GREATER_OR_EQUAL expression
-   36           | expression . T_LESS expression
-   37           | expression . T_LESS_OR_EQUAL expression
-   38           | expression . T_NOT_EQUAL expression
-   39           | expression . T_AND expression
-   40           | expression . T_OR expression
-   41           | expression . T_ADD expression
-   41           | expression T_ADD expression .
-   42           | expression . T_SUB expression
-   43           | expression . T_DIV expression
-   44           | expression . T_MUL expression
-
-    T_AND               shift, and go to state 33
-    T_OR                shift, and go to state 34
-    T_EQUAL             shift, and go to state 35
-    T_NOT_EQUAL         shift, and go to state 36
-    T_GREATER_OR_EQUAL  shift, and go to state 37
-    T_LESS_OR_EQUAL     shift, and go to state 38
-    T_GREATER           shift, and go to state 39
-    T_LESS              shift, and go to state 40
-    T_MUL               shift, and go to state 43
-    T_DIV               shift, and go to state 44
+   37 expression: expression . T_EQUAL expression
+   38           | expression . T_GREATER expression
+   39           | expression . T_GREATER_OR_EQUAL expression
+   40           | expression . T_LESS expression
+   41           | expression . T_LESS_OR_EQUAL expression
+   41           | expression T_LESS_OR_EQUAL expression .
+   42           | expression . T_NOT_EQUAL expression
+   43           | expression . T_AND expression
+   44           | expression . T_OR expression
+   45           | expression . T_ADD expression
+   46           | expression . T_SUB expression
+   47           | expression . T_DIV expression
+   48           | expression . T_MUL expression
 
     $default  reduce using rule 41 (expression)
 
 
 State 62
 
-   33 expression: expression . T_EQUAL expression
-   34           | expression . T_GREATER expression
-   35           | expression . T_GREATER_OR_EQUAL expression
-   36           | expression . T_LESS expression
-   37           | expression . T_LESS_OR_EQUAL expression
-   38           | expression . T_NOT_EQUAL expression
-   39           | expression . T_AND expression
-   40           | expression . T_OR expression
-   41           | expression . T_ADD expression
-   42           | expression . T_SUB expression
-   42           | expression T_SUB expression .
-   43           | expression . T_DIV expression
-   44           | expression . T_MUL expression
+   37 expression: expression . T_EQUAL expression
+   38           | expression . T_GREATER expression
+   38           | expression T_GREATER expression .
+   39           | expression . T_GREATER_OR_EQUAL expression
+   40           | expression . T_LESS expression
+   41           | expression . T_LESS_OR_EQUAL expression
+   42           | expression . T_NOT_EQUAL expression
+   43           | expression . T_AND expression
+   44           | expression . T_OR expression
+   45           | expression . T_ADD expression
+   46           | expression . T_SUB expression
+   47           | expression . T_DIV expression
+   48           | expression . T_MUL expression
 
-    T_AND               shift, and go to state 33
-    T_OR                shift, and go to state 34
-    T_EQUAL             shift, and go to state 35
-    T_NOT_EQUAL         shift, and go to state 36
-    T_GREATER_OR_EQUAL  shift, and go to state 37
-    T_LESS_OR_EQUAL     shift, and go to state 38
-    T_GREATER           shift, and go to state 39
-    T_LESS              shift, and go to state 40
-    T_MUL               shift, and go to state 43
-    T_DIV               shift, and go to state 44
-
-    $default  reduce using rule 42 (expression)
+    $default  reduce using rule 38 (expression)
 
 
 State 63
 
-   33 expression: expression . T_EQUAL expression
-   34           | expression . T_GREATER expression
-   35           | expression . T_GREATER_OR_EQUAL expression
-   36           | expression . T_LESS expression
-   37           | expression . T_LESS_OR_EQUAL expression
-   38           | expression . T_NOT_EQUAL expression
-   39           | expression . T_AND expression
-   40           | expression . T_OR expression
-   41           | expression . T_ADD expression
-   42           | expression . T_SUB expression
-   43           | expression . T_DIV expression
-   44           | expression . T_MUL expression
-   44           | expression T_MUL expression .
+   37 expression: expression . T_EQUAL expression
+   38           | expression . T_GREATER expression
+   39           | expression . T_GREATER_OR_EQUAL expression
+   40           | expression . T_LESS expression
+   40           | expression T_LESS expression .
+   41           | expression . T_LESS_OR_EQUAL expression
+   42           | expression . T_NOT_EQUAL expression
+   43           | expression . T_AND expression
+   44           | expression . T_OR expression
+   45           | expression . T_ADD expression
+   46           | expression . T_SUB expression
+   47           | expression . T_DIV expression
+   48           | expression . T_MUL expression
 
-    T_AND               shift, and go to state 33
-    T_OR                shift, and go to state 34
-    T_EQUAL             shift, and go to state 35
-    T_NOT_EQUAL         shift, and go to state 36
-    T_GREATER_OR_EQUAL  shift, and go to state 37
-    T_LESS_OR_EQUAL     shift, and go to state 38
-    T_GREATER           shift, and go to state 39
-    T_LESS              shift, and go to state 40
-
-    $default  reduce using rule 44 (expression)
+    $default  reduce using rule 40 (expression)
 
 
 State 64
 
-   33 expression: expression . T_EQUAL expression
-   34           | expression . T_GREATER expression
-   35           | expression . T_GREATER_OR_EQUAL expression
-   36           | expression . T_LESS expression
-   37           | expression . T_LESS_OR_EQUAL expression
-   38           | expression . T_NOT_EQUAL expression
-   39           | expression . T_AND expression
-   40           | expression . T_OR expression
-   41           | expression . T_ADD expression
-   42           | expression . T_SUB expression
-   43           | expression . T_DIV expression
-   43           | expression T_DIV expression .
-   44           | expression . T_MUL expression
+   37 expression: expression . T_EQUAL expression
+   38           | expression . T_GREATER expression
+   39           | expression . T_GREATER_OR_EQUAL expression
+   40           | expression . T_LESS expression
+   41           | expression . T_LESS_OR_EQUAL expression
+   42           | expression . T_NOT_EQUAL expression
+   43           | expression . T_AND expression
+   44           | expression . T_OR expression
+   45           | expression . T_ADD expression
+   45           | expression T_ADD expression .
+   46           | expression . T_SUB expression
+   47           | expression . T_DIV expression
+   48           | expression . T_MUL expression
 
-    T_AND               shift, and go to state 33
-    T_OR                shift, and go to state 34
-    T_EQUAL             shift, and go to state 35
-    T_NOT_EQUAL         shift, and go to state 36
-    T_GREATER_OR_EQUAL  shift, and go to state 37
-    T_LESS_OR_EQUAL     shift, and go to state 38
-    T_GREATER           shift, and go to state 39
-    T_LESS              shift, and go to state 40
+    T_AND               shift, and go to state 36
+    T_OR                shift, and go to state 37
+    T_EQUAL             shift, and go to state 38
+    T_NOT_EQUAL         shift, and go to state 39
+    T_GREATER_OR_EQUAL  shift, and go to state 40
+    T_LESS_OR_EQUAL     shift, and go to state 41
+    T_GREATER           shift, and go to state 42
+    T_LESS              shift, and go to state 43
+    T_MUL               shift, and go to state 46
+    T_DIV               shift, and go to state 47
 
-    $default  reduce using rule 43 (expression)
+    $default  reduce using rule 45 (expression)
 
 
 State 65
 
-   13 statement: expression T_RANGE expression .
-   33 expression: expression . T_EQUAL expression
-   34           | expression . T_GREATER expression
-   35           | expression . T_GREATER_OR_EQUAL expression
-   36           | expression . T_LESS expression
-   37           | expression . T_LESS_OR_EQUAL expression
-   38           | expression . T_NOT_EQUAL expression
-   39           | expression . T_AND expression
-   40           | expression . T_OR expression
-   41           | expression . T_ADD expression
-   42           | expression . T_SUB expression
-   43           | expression . T_DIV expression
-   44           | expression . T_MUL expression
+   37 expression: expression . T_EQUAL expression
+   38           | expression . T_GREATER expression
+   39           | expression . T_GREATER_OR_EQUAL expression
+   40           | expression . T_LESS expression
+   41           | expression . T_LESS_OR_EQUAL expression
+   42           | expression . T_NOT_EQUAL expression
+   43           | expression . T_AND expression
+   44           | expression . T_OR expression
+   45           | expression . T_ADD expression
+   46           | expression . T_SUB expression
+   46           | expression T_SUB expression .
+   47           | expression . T_DIV expression
+   48           | expression . T_MUL expression
 
-    T_AND               shift, and go to state 33
-    T_OR                shift, and go to state 34
-    T_EQUAL             shift, and go to state 35
-    T_NOT_EQUAL         shift, and go to state 36
-    T_GREATER_OR_EQUAL  shift, and go to state 37
-    T_LESS_OR_EQUAL     shift, and go to state 38
-    T_GREATER           shift, and go to state 39
-    T_LESS              shift, and go to state 40
-    T_ADD               shift, and go to state 41
-    T_SUB               shift, and go to state 42
-    T_MUL               shift, and go to state 43
-    T_DIV               shift, and go to state 44
+    T_AND               shift, and go to state 36
+    T_OR                shift, and go to state 37
+    T_EQUAL             shift, and go to state 38
+    T_NOT_EQUAL         shift, and go to state 39
+    T_GREATER_OR_EQUAL  shift, and go to state 40
+    T_LESS_OR_EQUAL     shift, and go to state 41
+    T_GREATER           shift, and go to state 42
+    T_LESS              shift, and go to state 43
+    T_MUL               shift, and go to state 46
+    T_DIV               shift, and go to state 47
 
-    $default  reduce using rule 13 (statement)
+    $default  reduce using rule 46 (expression)
 
 
 State 66
 
-   33 expression: expression . T_EQUAL expression
-   34           | expression . T_GREATER expression
-   35           | expression . T_GREATER_OR_EQUAL expression
-   36           | expression . T_LESS expression
-   37           | expression . T_LESS_OR_EQUAL expression
-   38           | expression . T_NOT_EQUAL expression
-   39           | expression . T_AND expression
-   40           | expression . T_OR expression
-   41           | expression . T_ADD expression
-   42           | expression . T_SUB expression
-   43           | expression . T_DIV expression
-   44           | expression . T_MUL expression
-   52 method_call_args: expression .
+   37 expression: expression . T_EQUAL expression
+   38           | expression . T_GREATER expression
+   39           | expression . T_GREATER_OR_EQUAL expression
+   40           | expression . T_LESS expression
+   41           | expression . T_LESS_OR_EQUAL expression
+   42           | expression . T_NOT_EQUAL expression
+   43           | expression . T_AND expression
+   44           | expression . T_OR expression
+   45           | expression . T_ADD expression
+   46           | expression . T_SUB expression
+   47           | expression . T_DIV expression
+   48           | expression . T_MUL expression
+   48           | expression T_MUL expression .
 
-    T_AND               shift, and go to state 33
-    T_OR                shift, and go to state 34
-    T_EQUAL             shift, and go to state 35
-    T_NOT_EQUAL         shift, and go to state 36
-    T_GREATER_OR_EQUAL  shift, and go to state 37
-    T_LESS_OR_EQUAL     shift, and go to state 38
-    T_GREATER           shift, and go to state 39
-    T_LESS              shift, and go to state 40
-    T_ADD               shift, and go to state 41
-    T_SUB               shift, and go to state 42
-    T_MUL               shift, and go to state 43
-    T_DIV               shift, and go to state 44
+    T_AND               shift, and go to state 36
+    T_OR                shift, and go to state 37
+    T_EQUAL             shift, and go to state 38
+    T_NOT_EQUAL         shift, and go to state 39
+    T_GREATER_OR_EQUAL  shift, and go to state 40
+    T_LESS_OR_EQUAL     shift, and go to state 41
+    T_GREATER           shift, and go to state 42
+    T_LESS              shift, and go to state 43
 
-    $default  reduce using rule 52 (method_call_args)
+    $default  reduce using rule 48 (expression)
 
 
 State 67
 
-   28 method_call_expr: identifier TLPAREN method_call_args . TRPAREN
-   53 method_call_args: method_call_args . TCOMMA expression
+   37 expression: expression . T_EQUAL expression
+   38           | expression . T_GREATER expression
+   39           | expression . T_GREATER_OR_EQUAL expression
+   40           | expression . T_LESS expression
+   41           | expression . T_LESS_OR_EQUAL expression
+   42           | expression . T_NOT_EQUAL expression
+   43           | expression . T_AND expression
+   44           | expression . T_OR expression
+   45           | expression . T_ADD expression
+   46           | expression . T_SUB expression
+   47           | expression . T_DIV expression
+   47           | expression T_DIV expression .
+   48           | expression . T_MUL expression
 
-    TRPAREN  shift, and go to state 76
-    TCOMMA   shift, and go to state 77
+    T_AND               shift, and go to state 36
+    T_OR                shift, and go to state 37
+    T_EQUAL             shift, and go to state 38
+    T_NOT_EQUAL         shift, and go to state 39
+    T_GREATER_OR_EQUAL  shift, and go to state 40
+    T_LESS_OR_EQUAL     shift, and go to state 41
+    T_GREATER           shift, and go to state 42
+    T_LESS              shift, and go to state 43
+
+    $default  reduce using rule 47 (expression)
 
 
 State 68
 
-   21 method_arg_decl: identifier TCOLON identifier .
-   22                | identifier TCOLON identifier . TASSIGN expression
+   37 expression: expression . T_EQUAL expression
+   38           | expression . T_GREATER expression
+   39           | expression . T_GREATER_OR_EQUAL expression
+   40           | expression . T_LESS expression
+   41           | expression . T_LESS_OR_EQUAL expression
+   42           | expression . T_NOT_EQUAL expression
+   43           | expression . T_AND expression
+   44           | expression . T_OR expression
+   45           | expression . T_ADD expression
+   46           | expression . T_SUB expression
+   47           | expression . T_DIV expression
+   48           | expression . T_MUL expression
+   56 method_call_args: expression .
 
-    TASSIGN  shift, and go to state 78
+    T_AND               shift, and go to state 36
+    T_OR                shift, and go to state 37
+    T_EQUAL             shift, and go to state 38
+    T_NOT_EQUAL         shift, and go to state 39
+    T_GREATER_OR_EQUAL  shift, and go to state 40
+    T_LESS_OR_EQUAL     shift, and go to state 41
+    T_GREATER           shift, and go to state 42
+    T_LESS              shift, and go to state 43
+    T_ADD               shift, and go to state 44
+    T_SUB               shift, and go to state 45
+    T_MUL               shift, and go to state 46
+    T_DIV               shift, and go to state 47
 
-    $default  reduce using rule 21 (method_arg_decl)
+    $default  reduce using rule 56 (method_call_args)
 
 
 State 69
 
-   29 assignment_expr: identifier TASSIGN expression .
-   33 expression: expression . T_EQUAL expression
-   34           | expression . T_GREATER expression
-   35           | expression . T_GREATER_OR_EQUAL expression
-   36           | expression . T_LESS expression
-   37           | expression . T_LESS_OR_EQUAL expression
-   38           | expression . T_NOT_EQUAL expression
-   39           | expression . T_AND expression
-   40           | expression . T_OR expression
-   41           | expression . T_ADD expression
-   42           | expression . T_SUB expression
-   43           | expression . T_DIV expression
-   44           | expression . T_MUL expression
-
-    T_AND               shift, and go to state 33
-    T_OR                shift, and go to state 34
-    T_EQUAL             shift, and go to state 35
-    T_NOT_EQUAL         shift, and go to state 36
-    T_GREATER_OR_EQUAL  shift, and go to state 37
-    T_LESS_OR_EQUAL     shift, and go to state 38
-    T_GREATER           shift, and go to state 39
-    T_LESS              shift, and go to state 40
-    T_ADD               shift, and go to state 41
-    T_SUB               shift, and go to state 42
-    T_MUL               shift, and go to state 43
-    T_DIV               shift, and go to state 44
-
-    $default  reduce using rule 29 (assignment_expr)
-
-
-State 70
-
-   26 method_decl_args: method_arg_decl .
-
-    $default  reduce using rule 26 (method_decl_args)
-
-
-State 71
-
-   23 method_decl: TFUN identifier TLPAREN method_decl_args . TRPAREN block
-   24            | TFUN identifier TLPAREN method_decl_args . TRPAREN TCOLON identifier block
-   27 method_decl_args: method_decl_args . TCOMMA method_arg_decl
+   32 method_call_expr: identifier TLPAREN method_call_args . TRPAREN
+   57 method_call_args: method_call_args . TCOMMA expression
 
     TRPAREN  shift, and go to state 79
     TCOMMA   shift, and go to state 80
 
 
+State 70
+
+   25 method_arg_decl: identifier TCOLON identifier .
+   26                | identifier TCOLON identifier . TASSIGN expression
+
+    TASSIGN  shift, and go to state 81
+
+    $default  reduce using rule 25 (method_arg_decl)
+
+
+State 71
+
+   33 assignment_expr: identifier TASSIGN expression .
+   37 expression: expression . T_EQUAL expression
+   38           | expression . T_GREATER expression
+   39           | expression . T_GREATER_OR_EQUAL expression
+   40           | expression . T_LESS expression
+   41           | expression . T_LESS_OR_EQUAL expression
+   42           | expression . T_NOT_EQUAL expression
+   43           | expression . T_AND expression
+   44           | expression . T_OR expression
+   45           | expression . T_ADD expression
+   46           | expression . T_SUB expression
+   47           | expression . T_DIV expression
+   48           | expression . T_MUL expression
+
+    T_AND               shift, and go to state 36
+    T_OR                shift, and go to state 37
+    T_EQUAL             shift, and go to state 38
+    T_NOT_EQUAL         shift, and go to state 39
+    T_GREATER_OR_EQUAL  shift, and go to state 40
+    T_LESS_OR_EQUAL     shift, and go to state 41
+    T_GREATER           shift, and go to state 42
+    T_LESS              shift, and go to state 43
+    T_ADD               shift, and go to state 44
+    T_SUB               shift, and go to state 45
+    T_MUL               shift, and go to state 46
+    T_DIV               shift, and go to state 47
+
+    $default  reduce using rule 33 (assignment_expr)
+
+
 State 72
 
-   21 method_arg_decl: identifier . TCOLON identifier
-   22                | identifier . TCOLON identifier TASSIGN expression
+   30 method_decl_args: method_arg_decl .
 
-    TCOLON  shift, and go to state 47
+    $default  reduce using rule 30 (method_decl_args)
 
 
 State 73
 
-   18 var_decl: TVAR identifier TCOLON identifier .
-   19         | TVAR identifier TCOLON identifier . TASSIGN expression
+   27 method_decl: TFUN identifier TLPAREN method_decl_args . TRPAREN block
+   28            | TFUN identifier TLPAREN method_decl_args . TRPAREN TCOLON identifier block
+   31 method_decl_args: method_decl_args . TCOMMA method_arg_decl
 
-    TASSIGN  shift, and go to state 81
-
-    $default  reduce using rule 18 (var_decl)
+    TRPAREN  shift, and go to state 82
+    TCOMMA   shift, and go to state 83
 
 
 State 74
 
-   20 val_decl: TVAL identifier TCOLON identifier . TASSIGN expression
+   25 method_arg_decl: identifier . TCOLON identifier
+   26                | identifier . TCOLON identifier TASSIGN expression
 
-    TASSIGN  shift, and go to state 82
+    TCOLON  shift, and go to state 49
 
 
 State 75
 
-   16 conditional: TIF TLPAREN expression TRPAREN . block
-   17            | TIF TLPAREN expression TRPAREN . block TELSE block
+   22 var_decl: TVAR identifier TCOLON identifier .
+   23         | TVAR identifier TCOLON identifier . TASSIGN expression
 
-    TLBRACE  shift, and go to state 83
+    TASSIGN  shift, and go to state 84
 
-    block  go to state 84
+    $default  reduce using rule 22 (var_decl)
 
 
 State 76
 
-   28 method_call_expr: identifier TLPAREN method_call_args TRPAREN .
+   24 val_decl: TVAL identifier TCOLON identifier . TASSIGN expression
 
-    $default  reduce using rule 28 (method_call_expr)
+    TASSIGN  shift, and go to state 85
 
 
 State 77
 
-   53 method_call_args: method_call_args TCOMMA . expression
+   20 conditional: TIF TLPAREN expression TRPAREN . block
+   21            | TIF TLPAREN expression TRPAREN . block TELSE block
 
-    TINTEGER     shift, and go to state 1
-    TSTRING      shift, and go to state 2
-    TIDENTIFIER  shift, and go to state 3
-    T_TRUE       shift, and go to state 10
-    T_FALSE      shift, and go to state 11
+    TLBRACE  shift, and go to state 86
 
-    method_call_expr  go to state 20
-    assignment_expr   go to state 21
-    expression        go to state 85
-    identifier        go to state 29
-    constant          go to state 24
+    block  go to state 87
 
 
 State 78
 
-   22 method_arg_decl: identifier TCOLON identifier TASSIGN . expression
+   16 for_statement: T_FOR TLPAREN identifier T_IN . expression T_RANGE expression TRPAREN block
+   17              | T_FOR TLPAREN identifier T_IN . expression T_RANGE expression T_STEP expression TRPAREN block
+   18              | T_FOR TLPAREN identifier T_IN . expression T_UNTIL expression TRPAREN block
+   19              | T_FOR TLPAREN identifier T_IN . expression T_UNTIL expression T_STEP expression TRPAREN block
 
     TINTEGER     shift, and go to state 1
     TSTRING      shift, and go to state 2
@@ -1355,37 +1335,40 @@ State 78
     T_TRUE       shift, and go to state 10
     T_FALSE      shift, and go to state 11
 
-    method_call_expr  go to state 20
-    assignment_expr   go to state 21
-    expression        go to state 86
-    identifier        go to state 29
-    constant          go to state 24
+    method_call_expr  go to state 22
+    assignment_expr   go to state 23
+    expression        go to state 88
+    identifier        go to state 31
+    constant          go to state 26
 
 
 State 79
 
-   23 method_decl: TFUN identifier TLPAREN method_decl_args TRPAREN . block
-   24            | TFUN identifier TLPAREN method_decl_args TRPAREN . TCOLON identifier block
+   32 method_call_expr: identifier TLPAREN method_call_args TRPAREN .
 
-    TLBRACE  shift, and go to state 83
-    TCOLON   shift, and go to state 87
-
-    block  go to state 88
+    $default  reduce using rule 32 (method_call_expr)
 
 
 State 80
 
-   27 method_decl_args: method_decl_args TCOMMA . method_arg_decl
+   57 method_call_args: method_call_args TCOMMA . expression
 
+    TINTEGER     shift, and go to state 1
+    TSTRING      shift, and go to state 2
     TIDENTIFIER  shift, and go to state 3
+    T_TRUE       shift, and go to state 10
+    T_FALSE      shift, and go to state 11
 
-    method_arg_decl  go to state 89
-    identifier       go to state 72
+    method_call_expr  go to state 22
+    assignment_expr   go to state 23
+    expression        go to state 89
+    identifier        go to state 31
+    constant          go to state 26
 
 
 State 81
 
-   19 var_decl: TVAR identifier TCOLON identifier TASSIGN . expression
+   26 method_arg_decl: identifier TCOLON identifier TASSIGN . expression
 
     TINTEGER     shift, and go to state 1
     TSTRING      shift, and go to state 2
@@ -1393,16 +1376,37 @@ State 81
     T_TRUE       shift, and go to state 10
     T_FALSE      shift, and go to state 11
 
-    method_call_expr  go to state 20
-    assignment_expr   go to state 21
+    method_call_expr  go to state 22
+    assignment_expr   go to state 23
     expression        go to state 90
-    identifier        go to state 29
-    constant          go to state 24
+    identifier        go to state 31
+    constant          go to state 26
 
 
 State 82
 
-   20 val_decl: TVAL identifier TCOLON identifier TASSIGN . expression
+   27 method_decl: TFUN identifier TLPAREN method_decl_args TRPAREN . block
+   28            | TFUN identifier TLPAREN method_decl_args TRPAREN . TCOLON identifier block
+
+    TLBRACE  shift, and go to state 86
+    TCOLON   shift, and go to state 91
+
+    block  go to state 92
+
+
+State 83
+
+   31 method_decl_args: method_decl_args TCOMMA . method_arg_decl
+
+    TIDENTIFIER  shift, and go to state 3
+
+    method_arg_decl  go to state 93
+    identifier       go to state 74
+
+
+State 84
+
+   23 var_decl: TVAR identifier TCOLON identifier TASSIGN . expression
 
     TINTEGER     shift, and go to state 1
     TSTRING      shift, and go to state 2
@@ -1410,14 +1414,31 @@ State 82
     T_TRUE       shift, and go to state 10
     T_FALSE      shift, and go to state 11
 
-    method_call_expr  go to state 20
-    assignment_expr   go to state 21
-    expression        go to state 91
-    identifier        go to state 29
-    constant          go to state 24
+    method_call_expr  go to state 22
+    assignment_expr   go to state 23
+    expression        go to state 94
+    identifier        go to state 31
+    constant          go to state 26
 
 
-State 83
+State 85
+
+   24 val_decl: TVAL identifier TCOLON identifier TASSIGN . expression
+
+    TINTEGER     shift, and go to state 1
+    TSTRING      shift, and go to state 2
+    TIDENTIFIER  shift, and go to state 3
+    T_TRUE       shift, and go to state 10
+    T_FALSE      shift, and go to state 11
+
+    method_call_expr  go to state 22
+    assignment_expr   go to state 23
+    expression        go to state 95
+    identifier        go to state 31
+    constant          go to state 26
+
+
+State 86
 
    14 block: TLBRACE . statements TRBRACE
    15      | TLBRACE . TRBRACE
@@ -1431,193 +1452,230 @@ State 83
     TRETURN       shift, and go to state 7
     TRETURN_VOID  shift, and go to state 8
     TIF           shift, and go to state 9
-    TRBRACE       shift, and go to state 92
+    TRBRACE       shift, and go to state 96
     T_TRUE        shift, and go to state 10
     T_FALSE       shift, and go to state 11
+    T_FOR         shift, and go to state 12
 
-    statements        go to state 93
-    statement         go to state 14
-    conditional       go to state 15
-    var_decl          go to state 16
-    val_decl          go to state 17
-    method_arg_decl   go to state 18
-    method_decl       go to state 19
-    method_call_expr  go to state 20
-    assignment_expr   go to state 21
-    expression        go to state 22
-    identifier        go to state 23
-    constant          go to state 24
-
-
-State 84
-
-   16 conditional: TIF TLPAREN expression TRPAREN block .
-   17            | TIF TLPAREN expression TRPAREN block . TELSE block
-
-    TELSE  shift, and go to state 94
-
-    $default  reduce using rule 16 (conditional)
-
-
-State 85
-
-   33 expression: expression . T_EQUAL expression
-   34           | expression . T_GREATER expression
-   35           | expression . T_GREATER_OR_EQUAL expression
-   36           | expression . T_LESS expression
-   37           | expression . T_LESS_OR_EQUAL expression
-   38           | expression . T_NOT_EQUAL expression
-   39           | expression . T_AND expression
-   40           | expression . T_OR expression
-   41           | expression . T_ADD expression
-   42           | expression . T_SUB expression
-   43           | expression . T_DIV expression
-   44           | expression . T_MUL expression
-   53 method_call_args: method_call_args TCOMMA expression .
-
-    T_AND               shift, and go to state 33
-    T_OR                shift, and go to state 34
-    T_EQUAL             shift, and go to state 35
-    T_NOT_EQUAL         shift, and go to state 36
-    T_GREATER_OR_EQUAL  shift, and go to state 37
-    T_LESS_OR_EQUAL     shift, and go to state 38
-    T_GREATER           shift, and go to state 39
-    T_LESS              shift, and go to state 40
-    T_ADD               shift, and go to state 41
-    T_SUB               shift, and go to state 42
-    T_MUL               shift, and go to state 43
-    T_DIV               shift, and go to state 44
-
-    $default  reduce using rule 53 (method_call_args)
-
-
-State 86
-
-   22 method_arg_decl: identifier TCOLON identifier TASSIGN expression .
-   33 expression: expression . T_EQUAL expression
-   34           | expression . T_GREATER expression
-   35           | expression . T_GREATER_OR_EQUAL expression
-   36           | expression . T_LESS expression
-   37           | expression . T_LESS_OR_EQUAL expression
-   38           | expression . T_NOT_EQUAL expression
-   39           | expression . T_AND expression
-   40           | expression . T_OR expression
-   41           | expression . T_ADD expression
-   42           | expression . T_SUB expression
-   43           | expression . T_DIV expression
-   44           | expression . T_MUL expression
-
-    T_AND               shift, and go to state 33
-    T_OR                shift, and go to state 34
-    T_EQUAL             shift, and go to state 35
-    T_NOT_EQUAL         shift, and go to state 36
-    T_GREATER_OR_EQUAL  shift, and go to state 37
-    T_LESS_OR_EQUAL     shift, and go to state 38
-    T_GREATER           shift, and go to state 39
-    T_LESS              shift, and go to state 40
-    T_ADD               shift, and go to state 41
-    T_SUB               shift, and go to state 42
-    T_MUL               shift, and go to state 43
-    T_DIV               shift, and go to state 44
-
-    $default  reduce using rule 22 (method_arg_decl)
+    statements        go to state 97
+    statement         go to state 15
+    for_statement     go to state 16
+    conditional       go to state 17
+    var_decl          go to state 18
+    val_decl          go to state 19
+    method_arg_decl   go to state 20
+    method_decl       go to state 21
+    method_call_expr  go to state 22
+    assignment_expr   go to state 23
+    expression        go to state 24
+    identifier        go to state 25
+    constant          go to state 26
 
 
 State 87
 
-   24 method_decl: TFUN identifier TLPAREN method_decl_args TRPAREN TCOLON . identifier block
+   20 conditional: TIF TLPAREN expression TRPAREN block .
+   21            | TIF TLPAREN expression TRPAREN block . TELSE block
 
-    TIDENTIFIER  shift, and go to state 3
+    TELSE  shift, and go to state 98
 
-    identifier  go to state 95
+    $default  reduce using rule 20 (conditional)
 
 
 State 88
 
-   23 method_decl: TFUN identifier TLPAREN method_decl_args TRPAREN block .
+   16 for_statement: T_FOR TLPAREN identifier T_IN expression . T_RANGE expression TRPAREN block
+   17              | T_FOR TLPAREN identifier T_IN expression . T_RANGE expression T_STEP expression TRPAREN block
+   18              | T_FOR TLPAREN identifier T_IN expression . T_UNTIL expression TRPAREN block
+   19              | T_FOR TLPAREN identifier T_IN expression . T_UNTIL expression T_STEP expression TRPAREN block
+   37 expression: expression . T_EQUAL expression
+   38           | expression . T_GREATER expression
+   39           | expression . T_GREATER_OR_EQUAL expression
+   40           | expression . T_LESS expression
+   41           | expression . T_LESS_OR_EQUAL expression
+   42           | expression . T_NOT_EQUAL expression
+   43           | expression . T_AND expression
+   44           | expression . T_OR expression
+   45           | expression . T_ADD expression
+   46           | expression . T_SUB expression
+   47           | expression . T_DIV expression
+   48           | expression . T_MUL expression
 
-    $default  reduce using rule 23 (method_decl)
+    T_AND               shift, and go to state 36
+    T_OR                shift, and go to state 37
+    T_EQUAL             shift, and go to state 38
+    T_NOT_EQUAL         shift, and go to state 39
+    T_GREATER_OR_EQUAL  shift, and go to state 40
+    T_LESS_OR_EQUAL     shift, and go to state 41
+    T_GREATER           shift, and go to state 42
+    T_LESS              shift, and go to state 43
+    T_ADD               shift, and go to state 44
+    T_SUB               shift, and go to state 45
+    T_MUL               shift, and go to state 46
+    T_DIV               shift, and go to state 47
+    T_RANGE             shift, and go to state 99
+    T_UNTIL             shift, and go to state 100
 
 
 State 89
 
-   27 method_decl_args: method_decl_args TCOMMA method_arg_decl .
+   37 expression: expression . T_EQUAL expression
+   38           | expression . T_GREATER expression
+   39           | expression . T_GREATER_OR_EQUAL expression
+   40           | expression . T_LESS expression
+   41           | expression . T_LESS_OR_EQUAL expression
+   42           | expression . T_NOT_EQUAL expression
+   43           | expression . T_AND expression
+   44           | expression . T_OR expression
+   45           | expression . T_ADD expression
+   46           | expression . T_SUB expression
+   47           | expression . T_DIV expression
+   48           | expression . T_MUL expression
+   57 method_call_args: method_call_args TCOMMA expression .
 
-    $default  reduce using rule 27 (method_decl_args)
+    T_AND               shift, and go to state 36
+    T_OR                shift, and go to state 37
+    T_EQUAL             shift, and go to state 38
+    T_NOT_EQUAL         shift, and go to state 39
+    T_GREATER_OR_EQUAL  shift, and go to state 40
+    T_LESS_OR_EQUAL     shift, and go to state 41
+    T_GREATER           shift, and go to state 42
+    T_LESS              shift, and go to state 43
+    T_ADD               shift, and go to state 44
+    T_SUB               shift, and go to state 45
+    T_MUL               shift, and go to state 46
+    T_DIV               shift, and go to state 47
+
+    $default  reduce using rule 57 (method_call_args)
 
 
 State 90
 
-   19 var_decl: TVAR identifier TCOLON identifier TASSIGN expression .
-   33 expression: expression . T_EQUAL expression
-   34           | expression . T_GREATER expression
-   35           | expression . T_GREATER_OR_EQUAL expression
-   36           | expression . T_LESS expression
-   37           | expression . T_LESS_OR_EQUAL expression
-   38           | expression . T_NOT_EQUAL expression
-   39           | expression . T_AND expression
-   40           | expression . T_OR expression
-   41           | expression . T_ADD expression
-   42           | expression . T_SUB expression
-   43           | expression . T_DIV expression
-   44           | expression . T_MUL expression
+   26 method_arg_decl: identifier TCOLON identifier TASSIGN expression .
+   37 expression: expression . T_EQUAL expression
+   38           | expression . T_GREATER expression
+   39           | expression . T_GREATER_OR_EQUAL expression
+   40           | expression . T_LESS expression
+   41           | expression . T_LESS_OR_EQUAL expression
+   42           | expression . T_NOT_EQUAL expression
+   43           | expression . T_AND expression
+   44           | expression . T_OR expression
+   45           | expression . T_ADD expression
+   46           | expression . T_SUB expression
+   47           | expression . T_DIV expression
+   48           | expression . T_MUL expression
 
-    T_AND               shift, and go to state 33
-    T_OR                shift, and go to state 34
-    T_EQUAL             shift, and go to state 35
-    T_NOT_EQUAL         shift, and go to state 36
-    T_GREATER_OR_EQUAL  shift, and go to state 37
-    T_LESS_OR_EQUAL     shift, and go to state 38
-    T_GREATER           shift, and go to state 39
-    T_LESS              shift, and go to state 40
-    T_ADD               shift, and go to state 41
-    T_SUB               shift, and go to state 42
-    T_MUL               shift, and go to state 43
-    T_DIV               shift, and go to state 44
+    T_AND               shift, and go to state 36
+    T_OR                shift, and go to state 37
+    T_EQUAL             shift, and go to state 38
+    T_NOT_EQUAL         shift, and go to state 39
+    T_GREATER_OR_EQUAL  shift, and go to state 40
+    T_LESS_OR_EQUAL     shift, and go to state 41
+    T_GREATER           shift, and go to state 42
+    T_LESS              shift, and go to state 43
+    T_ADD               shift, and go to state 44
+    T_SUB               shift, and go to state 45
+    T_MUL               shift, and go to state 46
+    T_DIV               shift, and go to state 47
 
-    $default  reduce using rule 19 (var_decl)
+    $default  reduce using rule 26 (method_arg_decl)
 
 
 State 91
 
-   20 val_decl: TVAL identifier TCOLON identifier TASSIGN expression .
-   33 expression: expression . T_EQUAL expression
-   34           | expression . T_GREATER expression
-   35           | expression . T_GREATER_OR_EQUAL expression
-   36           | expression . T_LESS expression
-   37           | expression . T_LESS_OR_EQUAL expression
-   38           | expression . T_NOT_EQUAL expression
-   39           | expression . T_AND expression
-   40           | expression . T_OR expression
-   41           | expression . T_ADD expression
-   42           | expression . T_SUB expression
-   43           | expression . T_DIV expression
-   44           | expression . T_MUL expression
+   28 method_decl: TFUN identifier TLPAREN method_decl_args TRPAREN TCOLON . identifier block
 
-    T_AND               shift, and go to state 33
-    T_OR                shift, and go to state 34
-    T_EQUAL             shift, and go to state 35
-    T_NOT_EQUAL         shift, and go to state 36
-    T_GREATER_OR_EQUAL  shift, and go to state 37
-    T_LESS_OR_EQUAL     shift, and go to state 38
-    T_GREATER           shift, and go to state 39
-    T_LESS              shift, and go to state 40
-    T_ADD               shift, and go to state 41
-    T_SUB               shift, and go to state 42
-    T_MUL               shift, and go to state 43
-    T_DIV               shift, and go to state 44
+    TIDENTIFIER  shift, and go to state 3
 
-    $default  reduce using rule 20 (val_decl)
+    identifier  go to state 101
 
 
 State 92
+
+   27 method_decl: TFUN identifier TLPAREN method_decl_args TRPAREN block .
+
+    $default  reduce using rule 27 (method_decl)
+
+
+State 93
+
+   31 method_decl_args: method_decl_args TCOMMA method_arg_decl .
+
+    $default  reduce using rule 31 (method_decl_args)
+
+
+State 94
+
+   23 var_decl: TVAR identifier TCOLON identifier TASSIGN expression .
+   37 expression: expression . T_EQUAL expression
+   38           | expression . T_GREATER expression
+   39           | expression . T_GREATER_OR_EQUAL expression
+   40           | expression . T_LESS expression
+   41           | expression . T_LESS_OR_EQUAL expression
+   42           | expression . T_NOT_EQUAL expression
+   43           | expression . T_AND expression
+   44           | expression . T_OR expression
+   45           | expression . T_ADD expression
+   46           | expression . T_SUB expression
+   47           | expression . T_DIV expression
+   48           | expression . T_MUL expression
+
+    T_AND               shift, and go to state 36
+    T_OR                shift, and go to state 37
+    T_EQUAL             shift, and go to state 38
+    T_NOT_EQUAL         shift, and go to state 39
+    T_GREATER_OR_EQUAL  shift, and go to state 40
+    T_LESS_OR_EQUAL     shift, and go to state 41
+    T_GREATER           shift, and go to state 42
+    T_LESS              shift, and go to state 43
+    T_ADD               shift, and go to state 44
+    T_SUB               shift, and go to state 45
+    T_MUL               shift, and go to state 46
+    T_DIV               shift, and go to state 47
+
+    $default  reduce using rule 23 (var_decl)
+
+
+State 95
+
+   24 val_decl: TVAL identifier TCOLON identifier TASSIGN expression .
+   37 expression: expression . T_EQUAL expression
+   38           | expression . T_GREATER expression
+   39           | expression . T_GREATER_OR_EQUAL expression
+   40           | expression . T_LESS expression
+   41           | expression . T_LESS_OR_EQUAL expression
+   42           | expression . T_NOT_EQUAL expression
+   43           | expression . T_AND expression
+   44           | expression . T_OR expression
+   45           | expression . T_ADD expression
+   46           | expression . T_SUB expression
+   47           | expression . T_DIV expression
+   48           | expression . T_MUL expression
+
+    T_AND               shift, and go to state 36
+    T_OR                shift, and go to state 37
+    T_EQUAL             shift, and go to state 38
+    T_NOT_EQUAL         shift, and go to state 39
+    T_GREATER_OR_EQUAL  shift, and go to state 40
+    T_LESS_OR_EQUAL     shift, and go to state 41
+    T_GREATER           shift, and go to state 42
+    T_LESS              shift, and go to state 43
+    T_ADD               shift, and go to state 44
+    T_SUB               shift, and go to state 45
+    T_MUL               shift, and go to state 46
+    T_DIV               shift, and go to state 47
+
+    $default  reduce using rule 24 (val_decl)
+
+
+State 96
 
    15 block: TLBRACE TRBRACE .
 
     $default  reduce using rule 15 (block)
 
 
-State 93
+State 97
 
     4 statements: statements . statement
    14 block: TLBRACE statements . TRBRACE
@@ -1631,57 +1689,321 @@ State 93
     TRETURN       shift, and go to state 7
     TRETURN_VOID  shift, and go to state 8
     TIF           shift, and go to state 9
-    TRBRACE       shift, and go to state 96
+    TRBRACE       shift, and go to state 102
     T_TRUE        shift, and go to state 10
     T_FALSE       shift, and go to state 11
+    T_FOR         shift, and go to state 12
 
-    statement         go to state 32
-    conditional       go to state 15
-    var_decl          go to state 16
-    val_decl          go to state 17
-    method_arg_decl   go to state 18
-    method_decl       go to state 19
-    method_call_expr  go to state 20
-    assignment_expr   go to state 21
-    expression        go to state 22
-    identifier        go to state 23
-    constant          go to state 24
-
-
-State 94
-
-   17 conditional: TIF TLPAREN expression TRPAREN block TELSE . block
-
-    TLBRACE  shift, and go to state 83
-
-    block  go to state 97
+    statement         go to state 35
+    for_statement     go to state 16
+    conditional       go to state 17
+    var_decl          go to state 18
+    val_decl          go to state 19
+    method_arg_decl   go to state 20
+    method_decl       go to state 21
+    method_call_expr  go to state 22
+    assignment_expr   go to state 23
+    expression        go to state 24
+    identifier        go to state 25
+    constant          go to state 26
 
 
-State 95
+State 98
 
-   24 method_decl: TFUN identifier TLPAREN method_decl_args TRPAREN TCOLON identifier . block
+   21 conditional: TIF TLPAREN expression TRPAREN block TELSE . block
 
-    TLBRACE  shift, and go to state 83
+    TLBRACE  shift, and go to state 86
 
-    block  go to state 98
+    block  go to state 103
 
 
-State 96
+State 99
+
+   16 for_statement: T_FOR TLPAREN identifier T_IN expression T_RANGE . expression TRPAREN block
+   17              | T_FOR TLPAREN identifier T_IN expression T_RANGE . expression T_STEP expression TRPAREN block
+
+    TINTEGER     shift, and go to state 1
+    TSTRING      shift, and go to state 2
+    TIDENTIFIER  shift, and go to state 3
+    T_TRUE       shift, and go to state 10
+    T_FALSE      shift, and go to state 11
+
+    method_call_expr  go to state 22
+    assignment_expr   go to state 23
+    expression        go to state 104
+    identifier        go to state 31
+    constant          go to state 26
+
+
+State 100
+
+   18 for_statement: T_FOR TLPAREN identifier T_IN expression T_UNTIL . expression TRPAREN block
+   19              | T_FOR TLPAREN identifier T_IN expression T_UNTIL . expression T_STEP expression TRPAREN block
+
+    TINTEGER     shift, and go to state 1
+    TSTRING      shift, and go to state 2
+    TIDENTIFIER  shift, and go to state 3
+    T_TRUE       shift, and go to state 10
+    T_FALSE      shift, and go to state 11
+
+    method_call_expr  go to state 22
+    assignment_expr   go to state 23
+    expression        go to state 105
+    identifier        go to state 31
+    constant          go to state 26
+
+
+State 101
+
+   28 method_decl: TFUN identifier TLPAREN method_decl_args TRPAREN TCOLON identifier . block
+
+    TLBRACE  shift, and go to state 86
+
+    block  go to state 106
+
+
+State 102
 
    14 block: TLBRACE statements TRBRACE .
 
     $default  reduce using rule 14 (block)
 
 
-State 97
+State 103
 
-   17 conditional: TIF TLPAREN expression TRPAREN block TELSE block .
+   21 conditional: TIF TLPAREN expression TRPAREN block TELSE block .
 
-    $default  reduce using rule 17 (conditional)
+    $default  reduce using rule 21 (conditional)
 
 
-State 98
+State 104
 
-   24 method_decl: TFUN identifier TLPAREN method_decl_args TRPAREN TCOLON identifier block .
+   16 for_statement: T_FOR TLPAREN identifier T_IN expression T_RANGE expression . TRPAREN block
+   17              | T_FOR TLPAREN identifier T_IN expression T_RANGE expression . T_STEP expression TRPAREN block
+   37 expression: expression . T_EQUAL expression
+   38           | expression . T_GREATER expression
+   39           | expression . T_GREATER_OR_EQUAL expression
+   40           | expression . T_LESS expression
+   41           | expression . T_LESS_OR_EQUAL expression
+   42           | expression . T_NOT_EQUAL expression
+   43           | expression . T_AND expression
+   44           | expression . T_OR expression
+   45           | expression . T_ADD expression
+   46           | expression . T_SUB expression
+   47           | expression . T_DIV expression
+   48           | expression . T_MUL expression
 
-    $default  reduce using rule 24 (method_decl)
+    TRPAREN             shift, and go to state 107
+    T_AND               shift, and go to state 36
+    T_OR                shift, and go to state 37
+    T_EQUAL             shift, and go to state 38
+    T_NOT_EQUAL         shift, and go to state 39
+    T_GREATER_OR_EQUAL  shift, and go to state 40
+    T_LESS_OR_EQUAL     shift, and go to state 41
+    T_GREATER           shift, and go to state 42
+    T_LESS              shift, and go to state 43
+    T_ADD               shift, and go to state 44
+    T_SUB               shift, and go to state 45
+    T_MUL               shift, and go to state 46
+    T_DIV               shift, and go to state 47
+    T_STEP              shift, and go to state 108
+
+
+State 105
+
+   18 for_statement: T_FOR TLPAREN identifier T_IN expression T_UNTIL expression . TRPAREN block
+   19              | T_FOR TLPAREN identifier T_IN expression T_UNTIL expression . T_STEP expression TRPAREN block
+   37 expression: expression . T_EQUAL expression
+   38           | expression . T_GREATER expression
+   39           | expression . T_GREATER_OR_EQUAL expression
+   40           | expression . T_LESS expression
+   41           | expression . T_LESS_OR_EQUAL expression
+   42           | expression . T_NOT_EQUAL expression
+   43           | expression . T_AND expression
+   44           | expression . T_OR expression
+   45           | expression . T_ADD expression
+   46           | expression . T_SUB expression
+   47           | expression . T_DIV expression
+   48           | expression . T_MUL expression
+
+    TRPAREN             shift, and go to state 109
+    T_AND               shift, and go to state 36
+    T_OR                shift, and go to state 37
+    T_EQUAL             shift, and go to state 38
+    T_NOT_EQUAL         shift, and go to state 39
+    T_GREATER_OR_EQUAL  shift, and go to state 40
+    T_LESS_OR_EQUAL     shift, and go to state 41
+    T_GREATER           shift, and go to state 42
+    T_LESS              shift, and go to state 43
+    T_ADD               shift, and go to state 44
+    T_SUB               shift, and go to state 45
+    T_MUL               shift, and go to state 46
+    T_DIV               shift, and go to state 47
+    T_STEP              shift, and go to state 110
+
+
+State 106
+
+   28 method_decl: TFUN identifier TLPAREN method_decl_args TRPAREN TCOLON identifier block .
+
+    $default  reduce using rule 28 (method_decl)
+
+
+State 107
+
+   16 for_statement: T_FOR TLPAREN identifier T_IN expression T_RANGE expression TRPAREN . block
+
+    TLBRACE  shift, and go to state 86
+
+    block  go to state 111
+
+
+State 108
+
+   17 for_statement: T_FOR TLPAREN identifier T_IN expression T_RANGE expression T_STEP . expression TRPAREN block
+
+    TINTEGER     shift, and go to state 1
+    TSTRING      shift, and go to state 2
+    TIDENTIFIER  shift, and go to state 3
+    T_TRUE       shift, and go to state 10
+    T_FALSE      shift, and go to state 11
+
+    method_call_expr  go to state 22
+    assignment_expr   go to state 23
+    expression        go to state 112
+    identifier        go to state 31
+    constant          go to state 26
+
+
+State 109
+
+   18 for_statement: T_FOR TLPAREN identifier T_IN expression T_UNTIL expression TRPAREN . block
+
+    TLBRACE  shift, and go to state 86
+
+    block  go to state 113
+
+
+State 110
+
+   19 for_statement: T_FOR TLPAREN identifier T_IN expression T_UNTIL expression T_STEP . expression TRPAREN block
+
+    TINTEGER     shift, and go to state 1
+    TSTRING      shift, and go to state 2
+    TIDENTIFIER  shift, and go to state 3
+    T_TRUE       shift, and go to state 10
+    T_FALSE      shift, and go to state 11
+
+    method_call_expr  go to state 22
+    assignment_expr   go to state 23
+    expression        go to state 114
+    identifier        go to state 31
+    constant          go to state 26
+
+
+State 111
+
+   16 for_statement: T_FOR TLPAREN identifier T_IN expression T_RANGE expression TRPAREN block .
+
+    $default  reduce using rule 16 (for_statement)
+
+
+State 112
+
+   17 for_statement: T_FOR TLPAREN identifier T_IN expression T_RANGE expression T_STEP expression . TRPAREN block
+   37 expression: expression . T_EQUAL expression
+   38           | expression . T_GREATER expression
+   39           | expression . T_GREATER_OR_EQUAL expression
+   40           | expression . T_LESS expression
+   41           | expression . T_LESS_OR_EQUAL expression
+   42           | expression . T_NOT_EQUAL expression
+   43           | expression . T_AND expression
+   44           | expression . T_OR expression
+   45           | expression . T_ADD expression
+   46           | expression . T_SUB expression
+   47           | expression . T_DIV expression
+   48           | expression . T_MUL expression
+
+    TRPAREN             shift, and go to state 115
+    T_AND               shift, and go to state 36
+    T_OR                shift, and go to state 37
+    T_EQUAL             shift, and go to state 38
+    T_NOT_EQUAL         shift, and go to state 39
+    T_GREATER_OR_EQUAL  shift, and go to state 40
+    T_LESS_OR_EQUAL     shift, and go to state 41
+    T_GREATER           shift, and go to state 42
+    T_LESS              shift, and go to state 43
+    T_ADD               shift, and go to state 44
+    T_SUB               shift, and go to state 45
+    T_MUL               shift, and go to state 46
+    T_DIV               shift, and go to state 47
+
+
+State 113
+
+   18 for_statement: T_FOR TLPAREN identifier T_IN expression T_UNTIL expression TRPAREN block .
+
+    $default  reduce using rule 18 (for_statement)
+
+
+State 114
+
+   19 for_statement: T_FOR TLPAREN identifier T_IN expression T_UNTIL expression T_STEP expression . TRPAREN block
+   37 expression: expression . T_EQUAL expression
+   38           | expression . T_GREATER expression
+   39           | expression . T_GREATER_OR_EQUAL expression
+   40           | expression . T_LESS expression
+   41           | expression . T_LESS_OR_EQUAL expression
+   42           | expression . T_NOT_EQUAL expression
+   43           | expression . T_AND expression
+   44           | expression . T_OR expression
+   45           | expression . T_ADD expression
+   46           | expression . T_SUB expression
+   47           | expression . T_DIV expression
+   48           | expression . T_MUL expression
+
+    TRPAREN             shift, and go to state 116
+    T_AND               shift, and go to state 36
+    T_OR                shift, and go to state 37
+    T_EQUAL             shift, and go to state 38
+    T_NOT_EQUAL         shift, and go to state 39
+    T_GREATER_OR_EQUAL  shift, and go to state 40
+    T_LESS_OR_EQUAL     shift, and go to state 41
+    T_GREATER           shift, and go to state 42
+    T_LESS              shift, and go to state 43
+    T_ADD               shift, and go to state 44
+    T_SUB               shift, and go to state 45
+    T_MUL               shift, and go to state 46
+    T_DIV               shift, and go to state 47
+
+
+State 115
+
+   17 for_statement: T_FOR TLPAREN identifier T_IN expression T_RANGE expression T_STEP expression TRPAREN . block
+
+    TLBRACE  shift, and go to state 86
+
+    block  go to state 117
+
+
+State 116
+
+   19 for_statement: T_FOR TLPAREN identifier T_IN expression T_UNTIL expression T_STEP expression TRPAREN . block
+
+    TLBRACE  shift, and go to state 86
+
+    block  go to state 118
+
+
+State 117
+
+   17 for_statement: T_FOR TLPAREN identifier T_IN expression T_RANGE expression T_STEP expression TRPAREN block .
+
+    $default  reduce using rule 17 (for_statement)
+
+
+State 118
+
+   19 for_statement: T_FOR TLPAREN identifier T_IN expression T_UNTIL expression T_STEP expression TRPAREN block .
+
+    $default  reduce using rule 19 (for_statement)
